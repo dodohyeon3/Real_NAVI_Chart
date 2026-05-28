@@ -27,11 +27,14 @@ export function MACDChart() {
         borderColor: '#2a2a45',
         scaleMargins: { top: 0.15, bottom: 0.15 },
       },
-      timeScale: { borderColor: '#2a2a45', timeVisible: true },
+      timeScale: {
+        borderColor: '#2a2a45',
+        timeVisible: true,  // MACD는 항상 맨 아래 → 시간 축 표시
+      },
       handleScroll: false,
       handleScale: false,
       width: containerRef.current.clientWidth,
-      height: 140,
+      height: 130,
     })
 
     const macdData = calcMACD(candleData)
@@ -66,9 +69,9 @@ export function MACDChart() {
 
     chart.timeScale().fitContent()
 
-    // 메인 차트 범위를 구독 → 메인이 스크롤/드래그되면 MACD도 같이 이동
+    // 메인 차트와 시간(날짜) 기반으로 동기화
     const unsub = chartSync.subscribe((range) => {
-      chart.timeScale().setVisibleLogicalRange(range)
+      chart.timeScale().setVisibleRange(range)
     })
 
     const handleResize = () => {

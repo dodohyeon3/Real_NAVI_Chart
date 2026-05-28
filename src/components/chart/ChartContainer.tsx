@@ -41,8 +41,10 @@ export function ChartContainer() {
   const pendingPointRef = useRef<{ time: Time; price: number } | null>(null)
 
   // ── 최신값을 ref에 동기화 (stale closure 방지) ────────
-  const drawingToolRef = useRef(useChartStore.getState().drawingTool)
-  const candleDataRef  = useRef(useChartStore.getState().candleData)
+  const drawingToolRef  = useRef(useChartStore.getState().drawingTool)
+  const candleDataRef   = useRef(useChartStore.getState().candleData)
+  // candleData 참조 변경 여부 추적 (fitContent를 데이터 변경 시에만 호출)
+  const prevCandleRef   = useRef(useChartStore.getState().candleData)
 
   const {
     candleData, isLoading, error,
@@ -146,8 +148,13 @@ export function ChartContainer() {
     const chart = chartRef.current, candle = candleRef.current
     if (!chart || !candle || candleData.length === 0) return
 
+    // fitContent는 실제 데이터가 바뀔 때만 호출
+    // (지표 토글 시에는 호출하지 않아 줌 유지)
+    const isNewData = candleData !== prevCandleRef.current
+    prevCandleRef.current = candleData
+
     candle.setData(candleData as any)
-    chart.timeScale().fitContent()
+    if (isNewData) chart.timeScale().fitContent()
 
     // 볼린저 밴드
     if (activeIndicators.has('bollinger')) {

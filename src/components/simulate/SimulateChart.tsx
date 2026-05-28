@@ -688,17 +688,20 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
 
           <div className="grid grid-cols-3 gap-2">
             {([
-              { choice: 'up'       as Choice, icon: '📈', label: '상승',  desc: '+5% 초과', color: 'emerald' },
-              { choice: 'sideways' as Choice, icon: '➡️', label: '횡보',  desc: '±5% 이내', color: 'amber'   },
-              { choice: 'down'     as Choice, icon: '📉', label: '하락',  desc: '-5% 초과', color: 'red'      },
-            ]).map(({ choice, icon, label, desc, color }) => (
+              { choice: 'up'       as Choice, icon: '📈', label: '상승',  desc: '+5% 초과',
+                cls: 'border-emerald-500/30 hover:border-emerald-500/70 hover:bg-emerald-500/10 hover:text-emerald-300' },
+              { choice: 'sideways' as Choice, icon: '➡️', label: '횡보',  desc: '±5% 이내',
+                cls: 'border-amber-500/30   hover:border-amber-500/70   hover:bg-amber-500/10   hover:text-amber-300'   },
+              { choice: 'down'     as Choice, icon: '📉', label: '하락',  desc: '-5% 초과',
+                cls: 'border-red-500/30     hover:border-red-500/70     hover:bg-red-500/10     hover:text-red-300'     },
+            ]).map(({ choice, icon, label, desc, cls }) => (
               <button
                 key={choice}
                 onClick={() => handleConfirmPrediction(choice)}
                 className={clsx(
-                  'flex flex-col items-center gap-1.5 py-4 rounded-2xl border-2 transition-all font-semibold',
-                  `border-${color}-500/30 hover:border-${color}-500/70 hover:bg-${color}-500/10`,
-                  'text-navi-muted hover:text-navi-text active:scale-95'
+                  'flex flex-col items-center gap-1.5 py-4 rounded-2xl border-2 transition-all',
+                  'text-navi-muted active:scale-95',
+                  cls
                 )}
               >
                 <span className="text-2xl">{icon}</span>

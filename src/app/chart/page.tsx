@@ -102,7 +102,7 @@ export default function ChartPage() {
         {/* 메인 차트 + 서브 차트 */}
         <RoundedCard padding="sm">
           <ChartContainer />
-          {showRSI  && <RSIChart />}
+          {showRSI  && <RSIChart hideTimeScale={showMACD} />}
           {showMACD && <MACDChart />}
         </RoundedCard>
 

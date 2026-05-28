@@ -6,7 +6,12 @@ import { useChartStore } from '@/stores/chartStore'
 import { calcRSI } from '@/lib/indicators'
 import { chartSync } from '@/lib/chartSync'
 
-export function RSIChart() {
+interface Props {
+  /** true: MACD도 함께 표시 중 → 타임 스케일 숨김 (중복 방지) */
+  hideTimeScale?: boolean
+}
+
+export function RSIChart({ hideTimeScale = false }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const { candleData } = useChartStore()
 
@@ -27,11 +32,15 @@ export function RSIChart() {
         borderColor: '#2a2a45',
         scaleMargins: { top: 0.1, bottom: 0.1 },
       },
-      timeScale: { borderColor: '#2a2a45', timeVisible: true },
+      timeScale: {
+        borderColor: '#2a2a45',
+        timeVisible: !hideTimeScale,
+        visible: !hideTimeScale,
+      },
       handleScroll: false,
       handleScale: false,
       width: containerRef.current.clientWidth,
-      height: 140,
+      height: hideTimeScale ? 110 : 130,
     })
 
     const rsiData = calcRSI(candleData)
@@ -41,9 +50,10 @@ export function RSIChart() {
       lastValueVisible: true, priceLineVisible: false,
     }).setData(rsiData as any)
 
-    if (rsiData.length > 0) {
-      const first = rsiData[0].time
-      const last  = rsiData[rsiData.length - 1].time
+    // 70/30 기준선: 전체 candleData 범위로 확장 (RSI 데이터보다 넓음)
+    if (candleData.length > 0) {
+      const first = candleData[0].time
+      const last  = candleData[candleData.length - 1].time
 
       chart.addLineSeries({
         color: '#ef4444', lineWidth: 1, lineStyle: 2,
@@ -58,9 +68,9 @@ export function RSIChart() {
 
     chart.timeScale().fitContent()
 
-    // 메인 차트 범위를 구독 → 메인이 스크롤/드래그되면 RSI도 같이 이동
+    // 메인 차트와 시간(날짜) 기반으로 동기화
     const unsub = chartSync.subscribe((range) => {
-      chart.timeScale().setVisibleLogicalRange(range)
+      chart.timeScale().setVisibleRange(range)
     })
 
     const handleResize = () => {
@@ -74,7 +84,7 @@ export function RSIChart() {
       unsub()
       chart.remove()
     }
-  }, [candleData])
+  }, [candleData, hideTimeScale])
 
   return (
     <div className="mt-1">
