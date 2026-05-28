@@ -192,11 +192,13 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
   const macdSeries  = useRef<{ hist: HistS; line: LineS; signal: LineS } | null>(null)
 
   /* ── 작도 refs ────────────────────────────────────────────── */
-  const drawnRef   = useRef<LineS[]>([])
-  const pendingRef = useRef<{ time: Time; price: number } | null>(null)
-  const mouseRef   = useRef<{ x: number; y: number } | null>(null)
-  const toolRef    = useRef<DrawTool>('none')
-  const revRef     = useRef(false)
+  const drawnRef    = useRef<LineS[]>([])
+  const pendingRef  = useRef<{ time: Time; price: number } | null>(null)
+  const mouseRef    = useRef<{ x: number; y: number } | null>(null)
+  const toolRef     = useRef<DrawTool>('none')
+  const revRef      = useRef(false)
+  // 피보나치 레벨 캔버스 레이블용 (오른쪽 레이블 제거 후 왼쪽에 직접 그리기)
+  const fibLevelsRef = useRef<{ value: number; label: string; color: string }[]>([])
 
   /* ── 데이터 변경 추적 (MA/BB toggle 시 setData 재호출 방지) ── */
   const prevPastRef     = useRef<CandleData[] | null>(null)
@@ -265,6 +267,30 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
     if (!ctx) return
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     drawCutoff(ctx, chart)
+
+    // ── 피보나치 레벨 레이블을 왼쪽에 그리기 (오른쪽 lastValueVisible 대체) ──
+    const fibLevels = fibLevelsRef.current
+    if (fibLevels.length > 0 && series) {
+      ctx.save()
+      ctx.font = 'bold 9px system-ui, sans-serif'
+      fibLevels.forEach(({ value, label, color }) => {
+        const y = series.priceToCoordinate(value)
+        if (y === null || y < 2 || y > MAIN_H - 2) return
+        const tw = ctx.measureText(label).width
+        const bw = tw + 8, bh = 14
+        const bx = 6, by = y - bh / 2
+        // 배경 박스
+        ctx.fillStyle = color + 'dd'   // hex + alpha(87%)
+        ctx.beginPath(); rrect(ctx, bx, by, bw, bh, 3); ctx.fill()
+        // 텍스트
+        ctx.fillStyle = '#fff'
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'middle'
+        ctx.fillText(label, bx + bw / 2, y)
+      })
+      ctx.restore()
+    }
+
     const pending = pendingRef.current
     const mouse   = mouseRef.current
     const tool    = toolRef.current
@@ -567,9 +593,12 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
         const allD = revealed ? [...pastData, ...futureData] : pastData
         const t1 = allD[allD.length - 1].time as Time
         FIB_LEVELS.forEach(({ ratio, color, label }) => {
-          const s = chart.addLineSeries({ color, lineWidth: 1, lineStyle: 2, title: label, lastValueVisible: true, priceLineVisible: false })
-          s.setData([{ time: t0, value: hi - range * ratio }, { time: t1, value: hi - range * ratio }] as any)
+          const value = hi - range * ratio
+          // title/lastValueVisible 제거 → 오른쪽 레이블 없음, 캔버스에서 왼쪽에 그림
+          const s = chart.addLineSeries({ color, lineWidth: 1, lineStyle: 2, lastValueVisible: false, priceLineVisible: false })
+          s.setData([{ time: t0, value }, { time: t1, value }] as any)
           drawnRef.current.push(s)
+          fibLevelsRef.current.push({ value, label, color })
         })
         redrawCanvas(); setDrawStep(0); setTool('none')
       }
@@ -582,6 +611,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
     if (drawTool === 'erase') {
       drawnRef.current.forEach(s => { try { chart.removeSeries(s) } catch {} })
       drawnRef.current = []; pendingRef.current = null
+      fibLevelsRef.current = []   // 피보나치 캔버스 레이블도 초기화
       redrawCanvas(); setDrawStep(0); setTool('none'); return
     }
     if (drawTool === 'none') return
