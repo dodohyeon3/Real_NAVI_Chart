@@ -198,6 +198,10 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
   const toolRef    = useRef<DrawTool>('none')
   const revRef     = useRef(false)
 
+  /* ── 데이터 변경 추적 (MA/BB toggle 시 setData 재호출 방지) ── */
+  const prevPastRef     = useRef<CandleData[] | null>(null)
+  const prevRevealedRef = useRef<boolean>(false)
+
   /* ── State ────────────────────────────────────────────────── */
   const [phase,          setPhase]         = useState<Phase>('analyzing')
   const [prediction,     setPrediction]    = useState<Choice | null>(null)
@@ -300,11 +304,12 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
       wickUpColor: '#26a69a', wickDownColor: '#ef5350',
     })
     chartRef.current = chart; candleRef.current = series
-    chart.timeScale().subscribeVisibleLogicalRangeChange((range) => {
+    // TimeRange 기반 sync: RSI/MACD는 warmup 바가 달라 LogicalRange로 맞추면 날짜 어긋남
+    chart.timeScale().subscribeVisibleTimeRangeChange((range) => {
       redrawCanvas()
       if (!range) return
-      rsiChart.current?.timeScale().setVisibleLogicalRange(range)
-      macdChart.current?.timeScale().setVisibleLogicalRange(range)
+      try { rsiChart.current?.timeScale().setVisibleRange(range) }  catch {}
+      try { macdChart.current?.timeScale().setVisibleRange(range) } catch {}
     })
     chart.subscribeCrosshairMove((p: MouseEventParams<Time>) => {
       mouseRef.current = p.point ? { x: p.point.x, y: p.point.y } : null
@@ -331,14 +336,22 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
     const chart = chartRef.current, candle = candleRef.current
     if (!chart || !candle || pastData.length === 0) return
     const data = revealed ? [...pastData, ...futureData] : pastData
-    candle.setData(data as any)
-    if (revealed) {
-      candle.setMarkers([{
-        time: futureData[0].time as Time,
-        position: 'belowBar', color: '#fbbf24', shape: 'arrowUp', text: '공개 시점',
-      }])
+
+    // 실제 캔들 데이터가 바뀔 때만 setData + fitContent 호출
+    // (MA/BB toggle 시 activeInds만 변경 → candle.setData 생략해야 차트 유지됨)
+    const isNewData = prevPastRef.current !== pastData || prevRevealedRef.current !== revealed
+    if (isNewData) {
+      prevPastRef.current     = pastData
+      prevRevealedRef.current = revealed
+      candle.setData(data as any)
+      if (revealed) {
+        candle.setMarkers([{
+          time: futureData[0].time as Time,
+          position: 'belowBar', color: '#fbbf24', shape: 'arrowUp', text: '공개 시점',
+        }])
+      }
+      chart.timeScale().fitContent()
     }
-    chart.timeScale().fitContent()
     // BB
     if (activeInds.has('bollinger')) {
       const { upper, middle, lower } = calcBollingerBands(data)
@@ -417,10 +430,10 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
       rsiSeries.current.os.setData([{ time: f, value: 30 }, { time: l, value: 30 }] as any)
     }
     rc.timeScale().fitContent()
-    // RAF 로 fitContent 렌더 패스 완료 후 메인 차트 범위 동기화
+    // RAF 로 fitContent 렌더 패스 완료 후 TimeRange 기반으로 메인 차트와 동기화
     requestAnimationFrame(() => {
-      const mainRange = chartRef.current?.timeScale().getVisibleLogicalRange()
-      if (mainRange) rc.timeScale().setVisibleLogicalRange(mainRange)
+      const mainRange = chartRef.current?.timeScale().getVisibleRange()
+      if (mainRange) { try { rc.timeScale().setVisibleRange(mainRange) } catch {} }
     })
   }, [activeInds, revealed, pastData, futureData])
 
@@ -454,10 +467,10 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
     macdSeries.current.line.setData(md.map(d => ({ time: d.time, value: d.macd })) as any)
     macdSeries.current.signal.setData(md.filter(d => d.signal !== null).map(d => ({ time: d.time, value: d.signal! })) as any)
     mc.timeScale().fitContent()
-    // RAF 로 fitContent 렌더 패스 완료 후 메인 차트 범위 동기화
+    // RAF 로 fitContent 렌더 패스 완료 후 TimeRange 기반으로 메인 차트와 동기화
     requestAnimationFrame(() => {
-      const mainRange = chartRef.current?.timeScale().getVisibleLogicalRange()
-      if (mainRange) mc.timeScale().setVisibleLogicalRange(mainRange)
+      const mainRange = chartRef.current?.timeScale().getVisibleRange()
+      if (mainRange) { try { mc.timeScale().setVisibleRange(mainRange) } catch {} }
     })
   }, [activeInds, revealed, pastData, futureData])
 

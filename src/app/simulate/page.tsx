@@ -7,7 +7,7 @@ import type { CandleData } from '@/types'
 
 /* ─── 구간 설정 ──────────────────────────────────────────────── */
 const PAST_DAYS   = 350  // 약 16개월 (분석 구간)
-const FUTURE_DAYS = 150  // 약 7개월  (예측 구간)
+const FUTURE_DAYS =  30  // 약 1.5개월 (예측 구간)
 const TOTAL_NEEDED = PAST_DAYS + FUTURE_DAYS
 
 /** 랜덤(또는 시드 기반) 으로 past/future 를 잘라냄 */
