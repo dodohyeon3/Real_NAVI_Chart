@@ -40,16 +40,23 @@ export const chartSync = {
 
   /**
    * 서브 차트 구독
-   * - 등록 즉시 현재 메인 차트의 시간 범위를 적용
+   * - 등록 후 다음 애니메이션 프레임에서 현재 메인 차트의 시간 범위를 적용
+   *   (서브 차트의 fitContent가 같은 프레임에서 처리된 후에 덮어씌우기 위해 지연)
    * - 반환값(함수)을 호출하면 구독 해제
    */
   subscribe(fn: RangeHandler): () => void {
     _subs.push(fn)
 
-    // 이미 메인 차트가 있다면 현재 시간 범위 즉시 동기화
-    const current = _main?.timeScale().getVisibleRange()
-    if (current) {
-      try { fn(current) } catch {}
+    // requestAnimationFrame으로 지연: 서브 차트의 fitContent()가
+    // 렌더링 파이프라인에서 처리된 이후에 setVisibleRange가 실행되도록 보장.
+    // RAF 내부에서 최신 범위를 읽어 스크롤 race condition도 방지.
+    if (_main) {
+      requestAnimationFrame(() => {
+        const range = _main?.timeScale().getVisibleRange()
+        if (range) {
+          try { fn(range) } catch {}
+        }
+      })
     }
 
     return () => {
