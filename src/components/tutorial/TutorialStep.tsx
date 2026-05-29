@@ -317,7 +317,7 @@ export function TutorialStep() {
               {canAdvance ? '다음 →' : '↑ 먼저 해보세요'}
             </button>
           ) : (
-            <Link href="/simulate" onClick={skip}
+            <Link href="/simulate?from=tutorial" onClick={skip}
               className="px-4 py-1.5 rounded-xl text-[12px] font-semibold bg-gradient-to-r from-indigo-500 to-indigo-600 text-white hover:from-indigo-400 hover:to-indigo-500 transition shadow-sm">
               🚀 시뮬레이션 시작
             </Link>

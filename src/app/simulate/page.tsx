@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, Suspense } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { SimulateChart } from '@/components/simulate/SimulateChart'
 import type { CandleData } from '@/types'
 
@@ -25,6 +26,36 @@ function pickWindow(data: CandleData[], seed?: number) {
     past:   data.slice(start, start + PAST_DAYS),
     future: data.slice(start + PAST_DAYS, start + PAST_DAYS + FUTURE_DAYS),
   }
+}
+
+/* ── useSearchParams 는 Suspense 안에서만 사용 가능 ── */
+function WelcomeBanner() {
+  const searchParams = useSearchParams()
+  const fromTutorial = searchParams.get('from') === 'tutorial'
+  const [show, setShow] = useState(fromTutorial)
+  if (!show) return null
+  return (
+    <div className="mb-4 bg-gradient-to-r from-indigo-500/15 to-purple-500/10
+                    border border-indigo-500/30 rounded-2xl p-4 relative">
+      <button
+        onClick={() => setShow(false)}
+        className="absolute top-3 right-3 text-indigo-400/50 hover:text-indigo-400 text-lg leading-none"
+      >×</button>
+      <p className="text-sm font-bold text-indigo-300 mb-1">
+        🎉 튜토리얼 완료! 이제 진짜 시험이에요
+      </p>
+      <p className="text-xs text-indigo-300/70 leading-relaxed">
+        방금 배운 MA·RSI·MACD·볼린저 밴드를 모두 사용할 수 있어요.
+        분석 도구를 켜고 지표들을 종합해서 예측해봐요. 틀려도 완전히 괜찮아요!
+      </p>
+      <div className="mt-2 flex flex-wrap gap-2 text-[11px]">
+        <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300">MA 추세 확인</span>
+        <span className="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300">RSI 과열 체크</span>
+        <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300">MACD 모멘텀</span>
+        <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300">BB 변동성</span>
+      </div>
+    </div>
+  )
 }
 
 export default function SimulatePage() {
@@ -91,6 +122,11 @@ export default function SimulatePage() {
           다른 구간
         </button>
       </div>
+
+      {/* ── 튜토리얼 완료 환영 배너 ─────────────────────────── */}
+      <Suspense fallback={null}>
+        <WelcomeBanner />
+      </Suspense>
 
       {/* ── 안내 배너 ────────────────────────────────────────── */}
       <div className="mb-4 bg-navi-surface border border-navi-border rounded-2xl p-4">
