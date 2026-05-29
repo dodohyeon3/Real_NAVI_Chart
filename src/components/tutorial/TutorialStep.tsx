@@ -26,13 +26,8 @@ function getMode(step: TStep, done: boolean): PanelMode {
   return 'reading'
 }
 
-/* ─── 패널 최대 높이 (bottom 패널 전용) ────────────────────── */
-const PANEL_H: Record<PanelMode, number> = {
-  mini:     72,
-  judgment: 300,
-  reading:  380,   // 실제로는 left 사이드 패널 사용 — 이 값은 smartScroll 계산에만 쓰임
-  feedback: 220,
-}
+/* ─── 패널 고정 높이 (모든 모드 동일) ──────────────────────── */
+const PANEL_H = 240
 
 /* ─── 하이라이트 링 타입 ────────────────────────────────────── */
 interface HighlightRect { top: number; left: number; width: number; height: number }
@@ -90,7 +85,7 @@ export function TutorialStep() {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const mode = currentStep ? getMode(currentStep, stepDone) : 'reading'
-  const ph   = PANEL_H[mode]
+  const ph   = PANEL_H
 
   /* ── indicator-toggle 감지 ─────────────────────────────── */
   useEffect(() => {
@@ -121,8 +116,7 @@ export function TutorialStep() {
     const curMode = getMode(currentStep, false)
     const curPh   = PANEL_H[curMode]
 
-    // reading 모드는 좌측 사이드 패널 → 하단 공간을 차지하지 않음
-    smartScroll(currentStep, curMode === 'reading' ? 0 : curPh)
+    smartScroll(currentStep, PANEL_H)
 
     timerRef.current = setTimeout(() => {
       recompute()
@@ -445,7 +439,7 @@ export function TutorialStep() {
               style={{
                 width:         '100%',
                 maxWidth:       860,
-                maxHeight:      mode === 'mini' ? 'auto' : `${ph}px`,
+                height:        `${ph}px`,
                 display:       'flex',
                 flexDirection: 'column',
                 pointerEvents: 'auto',
