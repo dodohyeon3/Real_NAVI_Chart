@@ -1,6 +1,4 @@
 import Link from 'next/link'
-import { NaviSymbol }   from '@/components/ui/NaviSymbol'
-import { NaviWordmark } from '@/components/ui/NaviWordmark'
 
 export default function LandingPage() {
   return (
@@ -48,31 +46,16 @@ export default function LandingPage() {
 
       {/* ── 브랜드 헤더 ─────────────────────────────────── */}
       <div className="flex flex-col items-center mb-10 relative z-10">
-        {/* 심볼 */}
-        <NaviSymbol className="w-11 h-11 text-navi-accent mb-5" />
-
-        {/* NAVI 워드마크 — 실제 폴리곤 타이포 */}
-        <NaviWordmark className="w-44 h-auto text-navi-text mb-1" />
-
-        {/* CHART 텍스트 — 워드마크 아래 */}
-        <div className="flex items-center gap-2 mt-1.5">
-          {/* 좌 구분선 */}
-          <div
-            className="h-px flex-1 bg-navi-accent/40"
-            style={{ width: 24 }}
-          />
-          <span className="text-[11px] font-bold tracking-[0.18em] uppercase text-navi-accent">
-            Chart
-          </span>
-          {/* 우 구분선 */}
-          <div
-            className="h-px flex-1 bg-navi-accent/40"
-            style={{ width: 24 }}
-          />
-        </div>
+        {/* NAVI Chart 로고 — 원본 SVG 파일 그대로 */}
+        <img
+          src="/navi-logo.svg"
+          alt="NAVI Chart"
+          className="w-60 h-auto select-none"
+          draggable={false}
+        />
 
         {/* 태그라인 */}
-        <p className="text-[10.5px] font-semibold tracking-[0.1em] uppercase mt-2.5"
+        <p className="text-[10.5px] font-semibold tracking-[0.1em] uppercase mt-1"
            style={{ color: 'rgba(248,249,247,0.45)' }}>
           차트 읽기 능력 학습 플랫폼
         </p>

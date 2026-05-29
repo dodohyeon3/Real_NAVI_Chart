@@ -14,7 +14,6 @@ const PAD          = 6      // spotlight padding around target (px)
 const SCROLL_MS    = 220    // delay after scroll before showing card
 const CARD_W       = 340    // card width (px) — computed dynamically on mount
 const CARD_MARGIN  = 14     // gap between spotlight ring and card
-const AUTO_ADV_MS  = 1800   // ms before auto-advance after action complete
 
 /* ── Types ────────────────────────────────────────────────────── */
 type CardMode = 'idle' | 'judgment' | 'feedback' | 'test'
@@ -215,7 +214,6 @@ export function TutorialStep() {
 
   const cardRef  = useRef<HTMLDivElement>(null)
   const stepTmr  = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const advTmr   = useRef<ReturnType<typeof setTimeout> | null>(null)
   const rafRef   = useRef<number>(0)
 
   const [testQIdx,    setTestQIdx]    = useState(0)
@@ -268,7 +266,6 @@ export function TutorialStep() {
 
     // Clear pending timers
     if (stepTmr.current) clearTimeout(stepTmr.current)
-    if (advTmr.current)  { clearTimeout(advTmr.current); advTmr.current = null }
     cancelAnimationFrame(rafRef.current)
 
     setShowCard(false); setHl(null); setCardPos(null)
@@ -314,30 +311,9 @@ export function TutorialStep() {
     if (activeIndicators.has(currentStep.indicatorKey as any)) markStepDone()
   }, [activeIndicators, currentStep, stepDone, markStepDone])
 
-  /* ── Auto-advance after action ───────────────────────── */
-  useEffect(() => {
-    if (!stepDone || !currentStep) return
-    if (advTmr.current) clearTimeout(advTmr.current)
-
-    const autoAdv =
-      currentStep.actionRequired === 'indicator-toggle' ||
-      currentStep.actionRequired === 'judgment'         ||
-      currentStep.actionRequired === 'candle-click'
-
-    if (autoAdv) {
-      advTmr.current = setTimeout(() => next(), AUTO_ADV_MS)
-    }
-    return () => { if (advTmr.current) clearTimeout(advTmr.current) }
-  }, [stepDone, currentStep?.id])  // eslint-disable-line
-
   if (!currentStep) return null
 
-  const isLast      = currentIndex === steps.length - 1
-  const isAutoAdv   = stepDone && (
-    currentStep.actionRequired === 'indicator-toggle' ||
-    currentStep.actionRequired === 'judgment'         ||
-    currentStep.actionRequired === 'candle-click'
-  )
+  const isLast  = currentIndex === steps.length - 1
   const canNext =
     !currentStep.actionRequired ||
     currentStep.actionRequired === 'free' ||
@@ -390,20 +366,17 @@ export function TutorialStep() {
         )}
         {!isLast ? (
           <button
-            onClick={canNext && !isAutoAdv ? next : undefined}
+            onClick={canNext ? next : undefined}
             disabled={!canNext}
             className={clsx(
               'px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all',
-              isAutoAdv
-                /* 자동 이동 중 = Success 상태 */
-                ? 'bg-navi-success/12 text-navi-success border border-navi-success/28 cursor-default'
-                : canNext
+              canNext
                 /* 다음 = Action (사용자가 클릭하는 것) */
                 ? 'bg-navi-action text-white hover:bg-navi-action-hover active:scale-95 cursor-pointer shadow-[0_2px_12px_rgba(91,127,255,0.3)]'
                 : 'bg-navi-surface3 text-navi-disabled cursor-not-allowed'
             )}
           >
-            {isAutoAdv ? '✓ 이동 중...' : canNext ? '다음 →' : '먼저 해보세요'}
+            {canNext ? '다음 →' : '먼저 해보세요'}
           </button>
         ) : (
           /* 마지막 단계 = 가장 강조된 Action */
@@ -491,18 +464,6 @@ export function TutorialStep() {
   const feedbackContent = (
     <div className="px-4 py-3 space-y-2">
       <p className="text-[13px] font-bold text-navi-text leading-snug">{currentStep.title}</p>
-
-      {/* Auto-advance = Success 상태 */}
-      <div className="flex items-center gap-1.5">
-        <motion.div
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ repeat: Infinity, duration: 1.2 }}
-          className="w-1.5 h-1.5 rounded-full bg-navi-success"
-        />
-        <span className="text-[10px] text-navi-success">
-          잠시 후 다음 단계로 자동으로 이동해요
-        </span>
-      </div>
 
       {/* Judgment result — Info color (학습 피드백 = 안내) */}
       {currentStep.actionRequired === 'judgment' &&
