@@ -81,7 +81,7 @@ export function RSIChart() {
   }, [candleData])
 
   return (
-    <div className="mt-1">
+    <div id="rsi-chart" className="mt-1">
       <div className="flex items-center gap-3 mb-1 px-1">
         <span className="text-xs font-semibold" style={{ color: '#a78bfa' }}>RSI (14)</span>
         <span className="text-xs text-red-400">── 70 과매수</span>

@@ -223,6 +223,18 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
   const toggleInd  = useCallback((k: string) =>
     setActiveInds(prev => { const s = new Set(prev); s.has(k) ? s.delete(k) : s.add(k); return s }), [])
 
+  /* ── 작도 도구 활성화 시 차트 스크롤 ────────────────────────── */
+  useEffect(() => {
+    const isDrawing = drawTool === 'trendline' || drawTool === 'fibonacci'
+    if (!isDrawing) return
+    const el = mainRef.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    if (rect.top < 0 || rect.bottom > window.innerHeight * 0.75) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [drawTool])
+
   /* ══ 캔버스 헬퍼 ════════════════════════════════════════════ */
   const syncCanvas = useCallback(() => {
     const c = canvasRef.current, el = mainRef.current
@@ -668,6 +680,23 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
         <div className="relative" style={{ cursor }}>
           <div ref={mainRef} className="w-full rounded-xl overflow-hidden" />
           <canvas ref={canvasRef} className="absolute top-0 left-0 pointer-events-none" style={{ height: MAIN_H, borderRadius: '0.75rem' }} />
+          {/* MA 범례 오버레이 */}
+          {activeInds.has('moving-average') && (
+            <div className="absolute top-2 left-2 flex flex-col gap-0.5 pointer-events-none z-10">
+              {([
+                { color: '#facc15', label: 'MA5'   },
+                { color: '#f97316', label: 'MA20'  },
+                { color: '#a78bfa', label: 'MA60'  },
+                { color: '#f43f5e', label: 'MA120' },
+              ] as const).map(({ color, label }) => (
+                <div key={label} className="flex items-center gap-1">
+                  <div className="w-4 h-0.5 rounded-full" style={{ backgroundColor: color }} />
+                  <span className="text-[10px] font-semibold" style={{ color, textShadow: '0 0 4px rgba(0,0,0,0.8)' }}>{label}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* 피보나치 레이블 HTML 오버레이 */}
           {fibLabels.map((lv, i) => (
             <div
@@ -712,14 +741,42 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
           </div>
         )}
 
-        {drawStep === 1 && (
-          <div className="mt-2 flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30">
-            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0" />
-            <span className="text-xs text-amber-300 font-medium">
-              {drawTool === 'trendline' ? '끝점을 클릭하세요' : '반대 끝점을 클릭하세요'}
-            </span>
-            <button onClick={() => { pendingRef.current = null; setDrawStep(0); setTool('none'); redrawCanvas() }}
-              className="ml-auto text-xs text-navi-muted hover:text-navi-text">취소</button>
+        {(drawTool === 'trendline' || drawTool === 'fibonacci') && (
+          <div className="mt-2 rounded-xl border border-amber-500/30 bg-amber-500/8 overflow-hidden">
+            {drawStep === 0 && (
+              <div className="flex items-center gap-2 px-3 py-2 bg-amber-500/10 border-b border-amber-500/20">
+                <span className="text-sm">⬆️</span>
+                <p className="text-[11px] font-semibold text-amber-300">위 차트에서 직접 클릭하세요</p>
+                <button
+                  onClick={() => { pendingRef.current = null; setDrawStep(0); setTool('none'); redrawCanvas() }}
+                  className="ml-auto text-[11px] text-amber-500/70 hover:text-amber-400 transition-colors"
+                >취소</button>
+              </div>
+            )}
+            <div className="flex items-center gap-3 px-3 py-2.5">
+              <div className="flex items-center gap-1.5 shrink-0">
+                {[0, 1].map((i) => (
+                  <div key={i} className={clsx(
+                    'rounded-full transition-all duration-300',
+                    i === drawStep       ? 'w-5 h-2.5 bg-amber-400' :
+                    i < drawStep        ? 'w-2.5 h-2.5 bg-amber-600' :
+                                          'w-2.5 h-2.5 bg-navi-border'
+                  )} />
+                ))}
+              </div>
+              <p className="text-[12px] text-amber-300 font-medium">
+                {drawStep === 0
+                  ? (drawTool === 'trendline' ? '① 시작점을 클릭하세요' : '① 고점(또는 저점)을 클릭하세요')
+                  : (drawTool === 'trendline' ? '② 끝점을 클릭하세요'   : '② 반대 끝점을 클릭하세요')
+                }
+              </p>
+              {drawStep === 1 && (
+                <button
+                  onClick={() => { pendingRef.current = null; setDrawStep(0); setTool('none'); redrawCanvas() }}
+                  className="ml-auto text-[11px] text-navi-muted hover:text-navi-text shrink-0 transition-colors"
+                >취소</button>
+              )}
+            </div>
           </div>
         )}
       </div>

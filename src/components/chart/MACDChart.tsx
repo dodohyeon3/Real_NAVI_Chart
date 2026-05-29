@@ -88,7 +88,7 @@ export function MACDChart() {
   }, [candleData])
 
   return (
-    <div className="mt-1">
+    <div id="macd-chart" className="mt-1">
       <div className="flex items-center gap-3 mb-1 px-1">
         <span className="text-xs font-semibold" style={{ color: '#60a5fa' }}>MACD (12,26,9)</span>
         <span className="text-xs" style={{ color: '#f97316' }}>── 시그널</span>
