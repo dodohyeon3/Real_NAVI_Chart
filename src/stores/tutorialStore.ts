@@ -118,9 +118,33 @@ export const useTutorialStore = create<TutorialState>()(
       },
 
       prev: () => {
-        const { currentIndex, steps } = get()
-        const prevIndex = Math.max(0, currentIndex - 1)
+        const { currentIndex, steps, currentStep } = get()
+        if (currentIndex === 0) return
+        const prevIndex = currentIndex - 1
         const prevStep  = steps[prevIndex]
+
+        // ── 현재 단계 진입 시 적용된 지표 변경 되돌리기 ──────────────
+        // clearIndicatorsOnEnter 로 껐던 지표 → 다시 켬 (판단 단계로 돌아갈 때 지표 복원)
+        if (currentStep?.clearIndicatorsOnEnter?.length) {
+          activateIndicators(currentStep.clearIndicatorsOnEnter)
+        }
+        // activateIndicatorsOnEnter 로 켰던 지표 → 다시 끔 (종합테스트 전 단계로 돌아갈 때)
+        if (currentStep?.activateIndicatorsOnEnter?.length) {
+          clearIndicators(currentStep.activateIndicatorsOnEnter)
+        }
+        // 현재 단계에서 사용자가 직접 켠 지표 → 끔 (toggle 단계 재시작)
+        if (currentStep?.indicatorKey) {
+          const { activeIndicators: ai, toggleIndicator: ti } = useChartStore.getState()
+          if (ai.has(currentStep.indicatorKey as any)) ti(currentStep.indicatorKey as any)
+        }
+
+        // ── 돌아가는 단계가 indicator-toggle 이면 해당 지표도 끔 ──────
+        // (이전 단계에서 켰던 지표가 아직 살아있을 수 있음)
+        if (prevStep?.indicatorKey) {
+          const { activeIndicators: ai, toggleIndicator: ti } = useChartStore.getState()
+          if (ai.has(prevStep.indicatorKey as any)) ti(prevStep.indicatorKey as any)
+        }
+
         set({
           currentIndex:     prevIndex,
           currentStep:      prevStep,
