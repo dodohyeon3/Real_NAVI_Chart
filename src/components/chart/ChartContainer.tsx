@@ -18,13 +18,13 @@ import { chartSync } from '@/lib/chartSync'
 type LineSeries = ISeriesApi<'Line'>
 
 const FIB_LEVELS = [
-  { ratio: 0,     label: '0%',    color: '#94a3b8' },
+  { ratio: 0,     label: '0%',    color: '#8892AA' },
   { ratio: 0.236, label: '23.6%', color: '#60a5fa' },
   { ratio: 0.382, label: '38.2%', color: '#34d399' },
   { ratio: 0.5,   label: '50%',   color: '#fbbf24' },
   { ratio: 0.618, label: '61.8%', color: '#f97316' },
   { ratio: 0.786, label: '78.6%', color: '#f472b6' },
-  { ratio: 1,     label: '100%',  color: '#94a3b8' },
+  { ratio: 1,     label: '100%',  color: '#8892AA' },
 ]
 
 const CHART_HEIGHT = 440
@@ -131,17 +131,17 @@ export function ChartContainer() {
 
     const chart = createChart(containerRef.current, {
       layout: {
-        background: { type: ColorType.Solid, color: '#1a1a2e' },
-        textColor: '#94a3b8',
+        background: { type: ColorType.Solid, color: '#070D1F' },
+        textColor: '#8892AA',
       },
       grid: {
-        vertLines: { color: '#2a2a45' },
-        horzLines: { color: '#2a2a45' },
+        vertLines: { color: '#0D1828' },
+        horzLines: { color: '#0D1828' },
       },
       crosshair: { mode: CrosshairMode.Normal },
-      rightPriceScale: { borderColor: '#2a2a45' },
+      rightPriceScale: { borderColor: '#0D1828' },
       timeScale: {
-        borderColor: '#2a2a45',
+        borderColor: '#0D1828',
         timeVisible: true,
         fixLeftEdge: true,   // 데이터 시작 이전으로 스크롤 방지
         fixRightEdge: true,  // 데이터 끝 이후로 스크롤 방지 → RSI/MACD 선 연장 현상 해소
@@ -218,7 +218,7 @@ export function ChartContainer() {
           color, lineWidth: 1, lineStyle: dash ? 2 : 0,
           lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false,
         })
-        bbRef.current = { upper: mk('#60a5fa'), middle: mk('#94a3b8', true), lower: mk('#60a5fa') }
+        bbRef.current = { upper: mk('#60a5fa'), middle: mk('#8892AA', true), lower: mk('#60a5fa') }
       }
       bbRef.current.upper.setData(upper as any)
       bbRef.current.middle.setData(middle as any)

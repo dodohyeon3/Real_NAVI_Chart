@@ -98,14 +98,14 @@ const ITEM = {
 }
 
 const BADGE_COLORS: Record<string, string> = {
-  '직접 클릭':   'bg-indigo-500/10 text-indigo-400',
+  '직접 클릭':   'bg-navi-accent/10 text-navi-accent',
   '직접 그려요': 'bg-amber-500/10 text-amber-400',
-  '토글':        'bg-indigo-500/10 text-indigo-400',
-  '판단':        'bg-purple-500/10 text-purple-400',
+  '토글':        'bg-navi-accent/10 text-navi-accent',
+  '판단':        'bg-navi-surface2 text-navi-secondary',
   '테스트':      'bg-emerald-500/10 text-emerald-400',
-  '축하':        'bg-pink-500/10 text-pink-400',
-  '안내':        'bg-sky-500/10 text-sky-400',
-  '실전':        'bg-orange-500/10 text-orange-400',
+  '축하':        'bg-navi-surface2 text-navi-text',
+  '안내':        'bg-navi-surface2 text-navi-secondary',
+  '실전':        'bg-navi-surface2 text-navi-accent',
 }
 
 export default function TutorialPage() {
@@ -125,9 +125,9 @@ export default function TutorialPage() {
         className="mb-8"
       >
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full
-                        bg-indigo-500/10 border border-indigo-500/25 mb-4">
-          <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-          <span className="text-[11px] font-semibold text-indigo-400">
+                        bg-navi-accent/10 border border-navi-accent/25 mb-4">
+          <span className="w-1.5 h-1.5 rounded-full bg-navi-accent animate-pulse" />
+          <span className="text-[11px] font-semibold text-navi-accent">
             읽기만 하는 설명 NO — 직접 해보는 튜토리얼
           </span>
         </div>
@@ -135,7 +135,7 @@ export default function TutorialPage() {
         <h1 className="text-2xl font-black text-navi-text leading-tight">
           "RSI를 배웠다"가<br />
           아니라<br />
-          <span className="text-indigo-400">"차트를 읽을 수 있다"</span><br />
+          <span className="text-navi-accent">"차트를 읽을 수 있다"</span><br />
           는 느낌
         </h1>
         <p className="text-navi-muted text-sm mt-3 leading-relaxed">
@@ -165,7 +165,7 @@ export default function TutorialPage() {
             variants={ITEM}
             className={`flex items-center gap-4 rounded-2xl px-4 py-3 border transition-colors
               ${step.highlight
-                ? 'bg-indigo-500/8 border-indigo-500/25'
+                ? 'bg-navi-accent/[0.08] border-navi-accent/25'
                 : 'bg-navi-surface border-navi-border'
               }`}
           >
@@ -194,9 +194,9 @@ export default function TutorialPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.9 }}
-        className="mb-8 px-4 py-3.5 rounded-2xl bg-navi-surface border border-indigo-500/20"
+        className="mb-8 px-4 py-3.5 rounded-2xl bg-navi-surface border border-navi-accent/20"
       >
-        <p className="text-xs text-indigo-300 leading-relaxed">
+        <p className="text-xs text-navi-accent/80 leading-relaxed">
           💡 <strong>어떤 버튼을 눌러도 데이터는 사라지지 않아요.</strong>{' '}
           설명을 읽는 게 아니라 실제 차트 위에서 직접 클릭하고 판단하면서
           차트 읽기 능력이 자연스럽게 생겨요.
@@ -212,24 +212,23 @@ export default function TutorialPage() {
       >
         <Link
           href="/chart?onboard=1"
-          className="w-full flex items-center justify-center gap-2 py-4
-                     bg-gradient-to-r from-indigo-600 to-indigo-500
-                     text-white font-bold text-sm rounded-2xl
-                     hover:from-indigo-500 hover:to-indigo-400
-                     shadow-lg shadow-indigo-500/25
-                     transition-all active:scale-[0.98]"
+          className="w-full flex items-center justify-center gap-2 h-12
+                     bg-navi-accent text-navi-text font-bold text-sm
+                     rounded-xl border border-navi-accent
+                     hover:bg-navi-accent-hover
+                     transition-all duration-150 active:scale-[0.98]"
         >
-          <span>🚀</span>
-          <span>튜토리얼 시작하기</span>
-          <span className="text-indigo-200 text-xs font-normal ml-1">차트 위에서 바로 시작해요</span>
+          튜토리얼 시작하기
+          <span className="text-navi-text/50 text-[11px] font-normal">차트 위에서 바로 시작</span>
         </Link>
 
         <Link
           href="/chart"
-          className="w-full flex items-center justify-center py-3
-                     border border-navi-border rounded-2xl
-                     text-xs text-navi-muted hover:text-navi-text
-                     hover:border-navi-accent transition-colors"
+          className="w-full flex items-center justify-center h-10
+                     border border-navi-border rounded-xl
+                     text-[12px] text-navi-muted
+                     hover:border-navi-border2 hover:text-navi-text
+                     transition-all duration-150"
         >
           건너뛰고 차트 바로 보기
         </Link>

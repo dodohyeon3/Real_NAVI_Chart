@@ -22,18 +22,18 @@ export function PeriodToolbar() {
   const { period, timeUnit, setPeriod, setTimeUnit } = useChartStore()
 
   return (
-    <div id="period-toolbar" className="flex flex-wrap items-center gap-3">
+    <div id="period-toolbar" className="flex flex-wrap items-center gap-2">
       {/* 기간 선택 */}
-      <div className="flex gap-1 bg-navi-surface border border-navi-border rounded-xl p-1">
+      <div className="flex gap-px bg-navi-surface border border-navi-border rounded-lg p-1">
         {PERIODS.map((p) => (
           <button
             key={p.value}
             onClick={() => setPeriod(p.value)}
             className={clsx(
-              'px-3 py-1 rounded-lg text-xs font-medium transition-all',
+              'h-7 px-3 rounded-md text-[11px] font-medium tracking-wide transition-all duration-150',
               period === p.value
-                ? 'bg-navi-accent text-white'
-                : 'text-navi-muted hover:text-navi-text'
+                ? 'bg-navi-accent text-navi-text'
+                : 'text-navi-muted hover:text-navi-secondary'
             )}
           >
             {p.label}
@@ -41,17 +41,20 @@ export function PeriodToolbar() {
         ))}
       </div>
 
+      {/* 구분선 */}
+      <div className="w-px h-5 bg-navi-border" />
+
       {/* 봉 단위 선택 */}
-      <div className="flex gap-1 bg-navi-surface border border-navi-border rounded-xl p-1">
+      <div className="flex gap-px bg-navi-surface border border-navi-border rounded-lg p-1">
         {UNITS.map((u) => (
           <button
             key={u.value}
             onClick={() => setTimeUnit(u.value)}
             className={clsx(
-              'px-3 py-1 rounded-lg text-xs font-medium transition-all',
+              'h-7 px-3 rounded-md text-[11px] font-medium transition-all duration-150',
               timeUnit === u.value
-                ? 'bg-navi-accent text-white'
-                : 'text-navi-muted hover:text-navi-text'
+                ? 'bg-navi-accent text-navi-text'
+                : 'text-navi-muted hover:text-navi-secondary'
             )}
           >
             {u.label}

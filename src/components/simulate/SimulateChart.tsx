@@ -35,13 +35,13 @@ interface Signal {
 
 /* ─── 상수 ──────────────────────────────────────────────────── */
 const FIB_LEVELS = [
-  { ratio: 0,     color: '#94a3b8', label: '0%'    },
+  { ratio: 0,     color: '#8892AA', label: '0%'    },
   { ratio: 0.236, color: '#60a5fa', label: '23.6%' },
   { ratio: 0.382, color: '#34d399', label: '38.2%' },
   { ratio: 0.5,   color: '#fbbf24', label: '50%'   },
   { ratio: 0.618, color: '#f97316', label: '61.8%' },
   { ratio: 0.786, color: '#f472b6', label: '78.6%' },
-  { ratio: 1,     color: '#94a3b8', label: '100%'  },
+  { ratio: 1,     color: '#8892AA', label: '100%'  },
 ]
 const MAIN_H = 340
 const SUB_H  = 110
@@ -320,11 +320,11 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
     if (!mainRef.current) return
     syncCanvas()
     const chart = createChart(mainRef.current, {
-      layout: { background: { type: ColorType.Solid, color: '#1a1a2e' }, textColor: '#94a3b8' },
-      grid:   { vertLines: { color: '#2a2a45' }, horzLines: { color: '#2a2a45' } },
+      layout: { background: { type: ColorType.Solid, color: '#070D1F' }, textColor: '#8892AA' },
+      grid:   { vertLines: { color: '#0D1828' }, horzLines: { color: '#0D1828' } },
       crosshair: { mode: CrosshairMode.Normal },
-      rightPriceScale: { borderColor: '#2a2a45' },
-      timeScale: { borderColor: '#2a2a45', timeVisible: true, fixLeftEdge: true, fixRightEdge: true },
+      rightPriceScale: { borderColor: '#0D1828' },
+      timeScale: { borderColor: '#0D1828', timeVisible: true, fixLeftEdge: true, fixRightEdge: true },
       width: mainRef.current.clientWidth, height: MAIN_H,
     })
     const series = chart.addCandlestickSeries({
@@ -388,7 +388,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
       const { upper, middle, lower } = calcBollingerBands(data)
       if (!bbRef.current) {
         const mk = (c: string, dash = false) => chart.addLineSeries({ color: c, lineWidth: 1, lineStyle: dash ? 2 : 0, lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false })
-        bbRef.current = { upper: mk('#60a5fa'), middle: mk('#94a3b8', true), lower: mk('#60a5fa') }
+        bbRef.current = { upper: mk('#60a5fa'), middle: mk('#8892AA', true), lower: mk('#60a5fa') }
       }
       bbRef.current.upper.setData(upper as any)
       bbRef.current.middle.setData(middle as any)
@@ -447,10 +447,10 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
 
     if (!rsiChart.current) {
       rsiChart.current = createChart(rsiDiv.current, {
-        layout: { background: { type: ColorType.Solid, color: '#1a1a2e' }, textColor: '#94a3b8' },
-        grid:   { vertLines: { color: '#2a2a45' }, horzLines: { color: '#2a2a45' } },
+        layout: { background: { type: ColorType.Solid, color: '#070D1F' }, textColor: '#8892AA' },
+        grid:   { vertLines: { color: '#0D1828' }, horzLines: { color: '#0D1828' } },
         crosshair: { mode: CrosshairMode.Normal },
-        rightPriceScale: { borderColor: '#2a2a45', scaleMargins: { top: 0.1, bottom: 0.1 } },
+        rightPriceScale: { borderColor: '#0D1828', scaleMargins: { top: 0.1, bottom: 0.1 } },
         timeScale: { visible: false },
         handleScroll: false, handleScale: false,
         width: rsiDiv.current.clientWidth, height: SUB_H,
@@ -504,10 +504,10 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
 
     if (!macdChart.current) {
       macdChart.current = createChart(macdDiv.current, {
-        layout: { background: { type: ColorType.Solid, color: '#1a1a2e' }, textColor: '#94a3b8' },
-        grid:   { vertLines: { color: '#2a2a45' }, horzLines: { color: '#2a2a45' } },
+        layout: { background: { type: ColorType.Solid, color: '#070D1F' }, textColor: '#8892AA' },
+        grid:   { vertLines: { color: '#0D1828' }, horzLines: { color: '#0D1828' } },
         crosshair: { mode: CrosshairMode.Normal },
-        rightPriceScale: { borderColor: '#2a2a45', scaleMargins: { top: 0.15, bottom: 0.15 } },
+        rightPriceScale: { borderColor: '#0D1828', scaleMargins: { top: 0.15, bottom: 0.15 } },
         timeScale: { visible: false },
         handleScroll: false, handleScale: false,
         width: macdDiv.current.clientWidth, height: SUB_H,
@@ -676,7 +676,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
       </div>
 
       {/* ── 메인 차트 + 캔버스 ────────────────────────────────── */}
-      <div className="bg-navi-surface border border-navi-border rounded-2xl p-3">
+      <div className="bg-navi-surface border border-navi-border rounded-xl p-3">
         <div className="relative" style={{ cursor }}>
           <div ref={mainRef} className="w-full rounded-xl overflow-hidden" />
           <canvas ref={canvasRef} className="absolute top-0 left-0 pointer-events-none" style={{ height: MAIN_H, borderRadius: '0.75rem' }} />
@@ -725,7 +725,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
           <div className="mt-1">
             <div className="flex items-center gap-3 mb-1 px-1">
               <span className="text-[11px] font-semibold" style={{ color: '#a78bfa' }}>RSI (14)</span>
-              <span className="text-[11px] text-red-400">── 70</span>
+              <span className="text-[11px] text-navi-red">── 70</span>
               <span className="text-[11px] text-green-400">── 30</span>
             </div>
             <div ref={rsiDiv} className="w-full rounded-xl overflow-hidden" />
@@ -783,7 +783,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
 
       {/* ── 도구 패널 ─────────────────────────────────────────── */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-navi-surface border border-navi-border rounded-2xl p-3 overflow-visible">
+        <div className="bg-navi-surface border border-navi-border rounded-xl p-3 overflow-visible">
           <p className="text-[11px] font-bold text-navi-muted mb-2">분석 도구</p>
           <div className="flex flex-wrap gap-1.5">
             {INDICATOR_BTNS.map(({ key, label }) => (
@@ -791,8 +791,8 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
                 className={clsx(
                   'px-2.5 py-1 rounded-lg text-xs font-semibold transition-all',
                   activeInds.has(key)
-                    ? 'bg-navi-accent text-white shadow-md'
-                    : 'bg-navi-border text-navi-muted hover:bg-navi-accent/20 hover:text-navi-text'
+                    ? 'bg-navi-accent text-navi-text'
+                    : 'bg-navi-surface2 text-navi-secondary border border-navi-border hover:border-navi-accent/40 hover:text-navi-text'
                 )}>
                 {label}
               </button>
@@ -800,7 +800,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
           </div>
         </div>
 
-        <div className="bg-navi-surface border border-navi-border rounded-2xl p-3">
+        <div className="bg-navi-surface border border-navi-border rounded-xl p-3">
           <p className="text-[11px] font-bold text-navi-muted mb-2">작도 도구</p>
           <div className="flex flex-wrap gap-1.5">
             {([
@@ -817,7 +817,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
               </button>
             ))}
             <button onClick={() => setTool('erase')}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs border border-navi-border text-navi-muted hover:border-red-500/50 hover:text-red-400 transition-all">
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs border border-navi-border text-navi-muted hover:border-red-500/50 hover:text-navi-red transition-all">
               ✕ 지우기
             </button>
           </div>
@@ -830,17 +830,17 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
       {phase === 'analyzing' && (
         <div className="space-y-2">
           {activeInds.size === 0 && (
-            <div className="flex items-start gap-2 px-4 py-3 rounded-2xl bg-amber-500/8 border border-amber-500/20 text-xs text-amber-400/80">
+            <div className="flex items-start gap-2 px-4 py-3 rounded-xl bg-amber-500/8 border border-amber-500/20 text-xs text-amber-400/80">
               <span>💡</span>
               <span>분석 도구를 하나 이상 켜보세요 — MA, RSI, MACD 중 하나를 활성화하면 더 근거 있는 예측을 할 수 있어요.</span>
             </div>
           )}
           <button
             onClick={() => setPhase('predicting')}
-            className="w-full py-3.5 rounded-2xl font-bold text-sm
-                       bg-gradient-to-r from-indigo-600 to-indigo-500
-                       text-white hover:from-indigo-500 hover:to-indigo-400
-                       shadow-lg shadow-indigo-500/20 transition-all active:scale-[0.98]"
+            className="w-full py-3.5 rounded-xl font-semibold text-[13px]
+                       bg-navi-accent
+                       text-navi-text hover:bg-navi-accent-hover
+                        transition-all active:scale-[0.98]"
           >
             ✅ 분석 완료 — 이제 예측해볼게요
           </button>
@@ -849,7 +849,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
 
       {/* ── PHASE 2: 예측 선택 ─────────────────────────────────── */}
       {phase === 'predicting' && (
-        <div className="bg-navi-surface border border-navi-border rounded-2xl p-5 space-y-4">
+        <div className="bg-navi-surface border border-navi-border rounded-xl p-5 space-y-4">
           <div>
             <p className="text-sm font-bold text-navi-text mb-1">
               📊 이 시점 이후 {futureData.length}일, 주가는?
@@ -870,7 +870,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
                 key={choice}
                 onClick={() => handleConfirmPrediction(choice)}
                 className={clsx(
-                  'flex flex-col items-center gap-1.5 py-4 rounded-2xl border-2 transition-all',
+                  'flex flex-col items-center gap-1.5 py-4 rounded-xl border-2 transition-all',
                   'text-navi-muted active:scale-95',
                   cls
                 )}
@@ -897,13 +897,13 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
 
           {/* 결과 카드 */}
           <div className={clsx(
-            'rounded-2xl border p-4',
-            result.change >= 0 ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-red-500/10 border-red-500/30'
+            'rounded-xl border p-4',
+            result.change >= 0 ? 'bg-navi-surface border border-navi-border2' : 'bg-navi-surface border border-navi-border2'
           )}>
             <p className="text-xs text-navi-muted mb-2">{futurePeriodLabel} · 실제 결과 ({result.days}거래일)</p>
             <div className="flex items-end gap-4">
               <div>
-                <p className={clsx('text-3xl font-black', result.change >= 0 ? 'text-emerald-400' : 'text-red-400')}>
+                <p className={clsx('text-3xl font-black', result.change >= 0 ? 'text-navi-green' : 'text-navi-red')}>
                   {result.change >= 0 ? '+' : ''}{result.change.toFixed(1)}%
                 </p>
                 <p className="text-xs text-navi-muted mt-0.5">
@@ -914,7 +914,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
 
               {/* 예측 적중 여부 */}
               <div className="ml-auto text-right">
-                <p className={clsx('text-sm font-bold', isCorrect(prediction, result.change) ? 'text-emerald-400' : 'text-amber-400')}>
+                <p className={clsx('text-sm font-bold', isCorrect(prediction, result.change) ? 'text-navi-green' : 'text-amber-400')}>
                   {isCorrect(prediction, result.change) ? '🎯 예측 성공!' : '📚 이번엔 달랐어요'}
                 </p>
                 <p className="text-[11px] text-navi-muted mt-0.5">
@@ -925,7 +925,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
           </div>
 
           {/* 디브리핑 카드 */}
-          <div className="bg-navi-surface border border-navi-border rounded-2xl p-4">
+          <div className="bg-navi-surface border border-navi-border rounded-xl p-4">
             <p className="text-xs font-bold text-navi-muted mb-3">
               🔍 예측 시점, 지표들은 이렇게 말하고 있었어요
             </p>
@@ -941,8 +941,8 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
                   <div key={i} className="flex items-start gap-3">
                     <span className={clsx(
                       'shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-md mt-0.5',
-                      sig.type === 'bullish' ? 'bg-emerald-500/15 text-emerald-400' :
-                      sig.type === 'bearish' ? 'bg-red-500/15 text-red-400' :
+                      sig.type === 'bullish' ? 'bg-emerald-500/15 text-navi-green' :
+                      sig.type === 'bearish' ? 'bg-red-500/15 text-navi-red' :
                       'bg-navi-border text-navi-muted'
                     )}>
                       {sig.icon} {sig.name}
@@ -968,7 +968,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
           <div className="flex gap-3">
             <button
               onClick={() => { revRef.current = false; onRetry() }}
-              className="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-navi-accent text-white hover:bg-indigo-500 transition-colors"
+              className="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-navi-accent text-navi-text hover:bg-navi-accent-hover transition-colors"
             >
               🔄 다른 구간 도전
             </button>

@@ -4,43 +4,35 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface ToastInfo {
-  slug:    string
-  icon:    string
-  title:   string
-  body:    string
-  hint:    string
+  slug: string; icon: string; title: string; body: string; hint: string
 }
 
 const TOAST_MAP: Record<string, Omit<ToastInfo, 'slug'>> = {
   'moving-average': {
-    icon:  '📊',
-    title: '이동평균선(MA) 켜짐',
-    body:  '노란선(MA20)은 최근 20일 평균, 보라선(MA60)은 최근 60일 평균이에요.',
-    hint:  '두 선이 교차하는 순간이 추세 전환 신호예요!',
+    icon: '📊', title: '이동평균선(MA) 활성화',
+    body: '4개의 선이 각각 5일·20일·60일·120일 평균 가격을 나타내요.',
+    hint: '선들이 함께 위를 향하면 상승 추세 신호예요',
   },
   'bollinger': {
-    icon:  '〰️',
-    title: '볼린저 밴드(BB) 켜짐',
-    body:  '주가를 감싸는 상·하단 밴드가 생겼어요. 밴드 폭이 핵심이에요.',
-    hint:  '밴드가 가장 좁아지는 구간을 찾아보세요 → 큰 움직임의 예고!',
+    icon: '〰️', title: '볼린저 밴드(BB) 활성화',
+    body: '주가를 감싸는 상·하단 밴드가 표시됐어요. 밴드 폭이 핵심이에요.',
+    hint: '밴드가 좁아지면 큰 움직임이 올 수 있어요',
   },
   'rsi': {
-    icon:  '🌡️',
-    title: 'RSI 켜짐',
-    body:  '차트 아래 0~100 사이의 선이 과열 정도를 보여줘요.',
-    hint:  '70 이상 = 과매수(빨간선) / 30 이하 = 과매도(초록선)',
+    icon: '🌡️', title: 'RSI 활성화',
+    body: '차트 아래 0~100 사이 선이 과열 정도를 보여줘요.',
+    hint: '70 이상 과매수 / 30 이하 과매도',
   },
   'macd': {
-    icon:  '🔄',
-    title: 'MACD 켜짐',
-    body:  '차트 아래에 파란선(MACD)과 주황선(시그널)이 나타났어요.',
-    hint:  '파란선이 주황선을 위로 뚫으면 매수 신호 → 교차점을 찾아보세요!',
+    icon: '🔄', title: 'MACD 활성화',
+    body: '파란선(MACD)과 주황선(시그널)의 교차 순간을 포착해요.',
+    hint: '파란선이 주황선을 위로 교차하면 매수 신호예요',
   },
 }
 
 interface Props {
-  slug:    string | null   // null이면 표시 안 함
-  onDone:  () => void
+  slug: string | null
+  onDone: () => void
 }
 
 export function IndicatorToast({ slug, onDone }: Props) {
@@ -50,7 +42,7 @@ export function IndicatorToast({ slug, onDone }: Props) {
   useEffect(() => {
     if (!slug || !info) return
     setVisible(true)
-    const t = setTimeout(() => { setVisible(false); setTimeout(onDone, 300) }, 5500)
+    const t = setTimeout(() => { setVisible(false); setTimeout(onDone, 250) }, 5000)
     return () => clearTimeout(t)
   }, [slug]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -58,35 +50,34 @@ export function IndicatorToast({ slug, onDone }: Props) {
     <AnimatePresence>
       {visible && info && (
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0  }}
-          exit={{   opacity: 0, y: 16  }}
-          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{   opacity: 0, y: 12 }}
+          transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60]
                      w-[min(360px,calc(100vw-32px))]
-                     bg-navi-surface border border-navi-border rounded-2xl
-                     shadow-[0_8px_32px_rgba(0,0,0,0.4)] px-4 py-3"
+                     bg-navi-surface border border-navi-border2 rounded-xl
+                     shadow-[0_8px_40px_rgba(0,0,0,0.6)] px-4 py-3"
         >
           <div className="flex items-start gap-3">
-            <span className="text-xl shrink-0 mt-0.5">{info.icon}</span>
+            <span className="text-lg shrink-0 mt-0.5">{info.icon}</span>
             <div className="flex-1 min-w-0">
-              <p className="text-[12px] font-bold text-navi-text mb-0.5">{info.title}</p>
-              <p className="text-[11px] text-navi-muted leading-relaxed">{info.body}</p>
-              <p className="text-[11px] text-indigo-400 mt-1 font-medium">{info.hint}</p>
+              <p className="text-[12px] font-bold text-navi-text mb-0.5 tracking-wide">
+                {info.title}
+              </p>
+              <p className="text-[11px] text-navi-secondary leading-relaxed">{info.body}</p>
+              <p className="text-[11px] text-navi-accent mt-1 font-semibold">{info.hint}</p>
             </div>
             <button
-              onClick={() => { setVisible(false); setTimeout(onDone, 300) }}
-              className="text-navi-muted hover:text-navi-text text-[11px] shrink-0"
-            >
-              ✕
-            </button>
+              onClick={() => { setVisible(false); setTimeout(onDone, 250) }}
+              className="text-navi-muted hover:text-navi-secondary text-[12px] shrink-0 transition-colors"
+            >✕</button>
           </div>
-          {/* progress bar */}
           <motion.div
-            className="absolute bottom-0 left-0 h-[2px] bg-indigo-500/50 rounded-b-2xl"
+            className="absolute bottom-0 left-0 h-[2px] bg-navi-accent/40 rounded-b-xl"
             initial={{ width: '100%' }}
             animate={{ width: '0%'   }}
-            transition={{ duration: 5.5, ease: 'linear' }}
+            transition={{ duration: 5.0, ease: 'linear' }}
           />
         </motion.div>
       )}

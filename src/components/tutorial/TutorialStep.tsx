@@ -268,25 +268,25 @@ export function TutorialStep() {
   /* ── 공통 헤더 배지 ─────────────────────────────────────── */
   const StepBadge = () => (
     <div className="flex items-center gap-2">
-      <span className="text-[9px] font-bold text-indigo-500 bg-indigo-50 px-1.5 py-0.5 rounded-full">
+      <span className="text-[9px] font-bold text-navi-accent bg-navi-accent/[0.08] px-1.5 py-0.5 rounded-full">
         {currentIndex + 1} / {steps.length}
       </span>
-      <span className="text-[9px] text-gray-400">어떤 버튼도 안전해요 🙂</span>
+      <span className="text-[9px] text-navi-muted">어떤 버튼도 안전해요 🙂</span>
     </div>
   )
 
   /* ── 선형 진행 바 + 네비게이션 ─────────────────────────── */
   const Nav = () => (
-    <div className="px-5 pb-3 pt-2 border-t border-gray-100 flex-shrink-0">
+    <div className="px-5 pb-3 pt-2 border-t border-navi-border flex-shrink-0">
       {/* 진행 바 */}
       <div className="flex items-center gap-2 mb-2.5">
-        <div className="flex-1 h-1 bg-gray-100 rounded-full overflow-hidden">
+        <div className="flex-1 h-1 bg-navi-surface3 rounded-full overflow-hidden">
           <div
-            className="h-full bg-indigo-400 rounded-full transition-all duration-500"
+            className="h-full bg-navi-accent rounded-full transition-all duration-500"
             style={{ width: `${((currentIndex + 1) / steps.length) * 100}%` }}
           />
         </div>
-        <span className="text-[10px] text-gray-400 shrink-0 tabular-nums">
+        <span className="text-[10px] text-navi-muted shrink-0 tabular-nums">
           {currentIndex + 1} / {steps.length}
         </span>
       </div>
@@ -295,15 +295,15 @@ export function TutorialStep() {
       <div className="flex items-center justify-between">
         <button
           onClick={skip}
-          className="text-[11px] text-gray-300 hover:text-gray-500 transition-colors"
+          className="text-[11px] text-navi-muted hover:text-navi-secondary transition-colors"
         >
           건너뛰기
         </button>
         <div className="flex gap-2">
           {currentIndex > 0 && (
             <button onClick={prev}
-              className="px-3 py-1.5 rounded-xl text-[12px] text-gray-400 border border-gray-200
-                         hover:border-gray-300 hover:text-gray-600 transition">
+              className="px-3 py-1.5 rounded-xl text-[12px] text-navi-muted border border-navi-border2
+                         hover:border-navi-border2 hover:text-navi-text transition">
               이전
             </button>
           )}
@@ -311,8 +311,8 @@ export function TutorialStep() {
             <button
               onClick={canAdvance ? next : undefined}
               className={canAdvance
-                ? 'px-4 py-1.5 rounded-xl text-[12px] font-semibold bg-indigo-500 text-white hover:bg-indigo-600 transition shadow-sm'
-                : 'px-4 py-1.5 rounded-xl text-[12px] font-semibold bg-gray-100 text-gray-400 cursor-not-allowed'
+                ? 'px-4 py-1.5 rounded-xl text-[12px] font-semibold bg-navi-accent/[0.08]0 text-white hover:bg-navi-accent transition shadow-sm'
+                : 'px-4 py-1.5 rounded-xl text-[12px] font-semibold bg-navi-surface3 text-navi-muted cursor-not-allowed'
               }>
               {canAdvance ? '다음 →' : '↑ 먼저 해보세요'}
             </button>
@@ -334,10 +334,10 @@ export function TutorialStep() {
     <div className="px-5 py-3.5 flex items-center gap-3 flex-1">
       <div className="flex-1 min-w-0">
         <StepBadge />
-        <p className="text-[13px] font-bold text-gray-800 mt-1 truncate">{currentStep.title}</p>
+        <p className="text-[13px] font-bold text-navi-text mt-1 truncate">{currentStep.title}</p>
         {currentStep.mission && (
-          <p className="text-[11px] text-indigo-600 mt-0.5 flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse shrink-0" />
+          <p className="text-[11px] text-navi-accent mt-0.5 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-navi-accent animate-pulse shrink-0" />
             {currentStep.mission}
           </p>
         )}
@@ -353,7 +353,7 @@ export function TutorialStep() {
       <div className="flex items-start justify-between mb-2">
         <div>
           <StepBadge />
-          <p className="text-[14px] font-bold text-gray-900 mt-1">{currentStep.title}</p>
+          <p className="text-[14px] font-bold text-navi-text mt-1">{currentStep.title}</p>
         </div>
       </div>
       {currentStep.judgment && (
@@ -366,12 +366,12 @@ export function TutorialStep() {
               <button
                 key={choice.value}
                 onClick={() => notifyJudgment(choice.value)}
-                className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl border border-gray-200
-                           hover:border-indigo-300 hover:bg-indigo-50 active:bg-indigo-100
+                className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl border border-navi-border2
+                           hover:border-navi-accent/50 hover:bg-navi-accent/[0.08] active:bg-navi-accent/[0.12]
                            transition-all text-left group"
               >
                 <span className="text-lg shrink-0">{choice.icon}</span>
-                <span className="text-[12px] font-medium text-gray-700 group-hover:text-indigo-700">
+                <span className="text-[12px] font-medium text-gray-700 group-hover:text-navi-accent/80">
                   {choice.label}
                 </span>
               </button>
@@ -390,14 +390,14 @@ export function TutorialStep() {
       <div className="flex items-start justify-between gap-3 mb-2.5">
         <div className="flex-1 min-w-0">
           <StepBadge />
-          <p className="font-bold text-gray-900 text-[15px] leading-snug mt-1">{currentStep.title}</p>
+          <p className="font-bold text-navi-text text-[15px] leading-snug mt-1">{currentStep.title}</p>
         </div>
       </div>
-      <div className="text-[12.5px] text-gray-500 leading-relaxed whitespace-pre-line">
+      <div className="text-[12.5px] text-navi-secondary leading-relaxed whitespace-pre-line">
         {currentStep.body}
       </div>
       {currentStep.tips && currentStep.tips.length > 0 && (
-        <ul className="mt-2.5 space-y-1 rounded-2xl bg-gray-50 p-3">
+        <ul className="mt-2.5 space-y-1 rounded-2xl bg-navi-surface2 p-3">
           {currentStep.tips.map((tip, i) => (
             <li key={i} className="flex gap-2 text-[11.5px] text-gray-600 leading-relaxed">
               <span className="text-indigo-300 shrink-0 mt-px">•</span>
@@ -407,12 +407,12 @@ export function TutorialStep() {
         </ul>
       )}
       {currentStep.mission && !stepDone && (
-        <div className="mt-2.5 rounded-2xl bg-indigo-50 border border-indigo-100 p-3">
-          <p className="text-[10px] font-bold text-indigo-500 mb-1">🎯 지금 해보세요</p>
-          <p className="text-[12px] text-indigo-700 leading-relaxed">{currentStep.mission}</p>
+        <div className="mt-2.5 rounded-2xl bg-navi-accent/[0.08] border border-navi-accent/20 p-3">
+          <p className="text-[10px] font-bold text-navi-accent mb-1">🎯 지금 해보세요</p>
+          <p className="text-[12px] text-navi-accent/80 leading-relaxed">{currentStep.mission}</p>
           <div className="mt-1.5 flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-            <span className="text-[10px] text-indigo-400">행동을 기다리는 중...</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-navi-accent animate-pulse" />
+            <span className="text-[10px] text-navi-accent">행동을 기다리는 중...</span>
           </div>
         </div>
       )}
@@ -427,23 +427,23 @@ export function TutorialStep() {
       <div className="flex items-start justify-between mb-2">
         <div>
           <StepBadge />
-          <p className="text-[14px] font-bold text-gray-900 mt-1">{currentStep.title}</p>
+          <p className="text-[14px] font-bold text-navi-text mt-1">{currentStep.title}</p>
         </div>
       </div>
 
       {/* 판단 피드백 */}
       {currentStep.actionRequired === 'judgment' && currentStep.judgment && chosenJudgment && (
-        <div className="rounded-2xl bg-indigo-50 border border-indigo-100 p-3">
+        <div className="rounded-2xl bg-navi-accent/[0.08] border border-navi-accent/20 p-3">
           <div className="flex items-center gap-2 mb-1.5">
             <span className="text-base">
               {currentStep.judgment.choices.find(c => c.value === chosenJudgment)?.icon}
             </span>
-            <span className="text-[10px] font-bold text-indigo-500">내 선택</span>
-            <span className="text-[11px] text-indigo-600">
+            <span className="text-[10px] font-bold text-navi-accent">내 선택</span>
+            <span className="text-[11px] text-navi-accent">
               {currentStep.judgment.choices.find(c => c.value === chosenJudgment)?.label}
             </span>
           </div>
-          <p className="text-[12px] text-indigo-700 leading-relaxed">
+          <p className="text-[12px] text-navi-accent/80 leading-relaxed">
             {currentStep.judgment.choices.find(c => c.value === chosenJudgment)?.feedback}
           </p>
         </div>
@@ -451,8 +451,8 @@ export function TutorialStep() {
 
       {/* 캔들 OHLC 카드 */}
       {clickedCandle && currentStep.actionRequired === 'candle-click' && (
-        <div className="rounded-2xl bg-slate-50 border border-slate-200 p-3">
-          <p className="text-[10px] font-bold text-slate-500 mb-2">📊 클릭한 날 ({clickedCandle.time})</p>
+        <div className="rounded-2xl bg-navi-surface2 border border-navi-border2 p-3">
+          <p className="text-[10px] font-bold text-navi-muted mb-2">📊 클릭한 날 ({clickedCandle.time})</p>
           <div className="grid grid-cols-5 gap-1">
             {[
               { label: '시가',  value: `$${clickedCandle.open.toFixed(2)}`,  color: '' },
@@ -466,7 +466,7 @@ export function TutorialStep() {
               },
             ].map(({ label, value, color }) => (
               <div key={label} className="flex flex-col items-center bg-white rounded-lg px-1 py-1.5">
-                <span className="text-[9px] text-slate-400">{label}</span>
+                <span className="text-[9px] text-navi-muted">{label}</span>
                 <span className="text-[10px] font-bold mt-0.5"
                   style={color ? { color } : { color: '#374151' }}>{value}</span>
               </div>
@@ -477,9 +477,9 @@ export function TutorialStep() {
 
       {/* 완료 메시지 */}
       {currentStep.completionMessage && (
-        <div className="mt-2 rounded-2xl bg-green-50 border border-green-200 p-3 flex items-start gap-2">
-          <span className="text-green-500 text-sm shrink-0">✅</span>
-          <p className="text-[12px] text-green-700 leading-relaxed">{currentStep.completionMessage}</p>
+        <div className="mt-2 rounded-2xl bg-navi-surface2 border border-navi-bullish/30 p-3 flex items-start gap-2">
+          <span className="text-navi-bullish text-sm shrink-0">✅</span>
+          <p className="text-[12px] text-navi-bullish leading-relaxed">{currentStep.completionMessage}</p>
         </div>
       )}
     </div>
@@ -503,7 +503,7 @@ export function TutorialStep() {
           <div className="flex items-start justify-between mb-2">
             <div>
               <StepBadge />
-              <p className="text-[14px] font-bold text-gray-900 mt-1">
+              <p className="text-[14px] font-bold text-navi-text mt-1">
                 {scoreCount >= total ? '🎯' : scoreCount >= total - 1 ? '✅' : '📚'}{' '}
                 {scoreCount} / {total} 문제를 맞혔어요!
               </p>
@@ -517,7 +517,7 @@ export function TutorialStep() {
                 <div key={tq.id}
                   className={clsx(
                     'flex items-center gap-2 px-3 py-2 rounded-xl text-[11px]',
-                    ok ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'
+                    ok ? 'bg-navi-surface2 text-navi-bullish' : 'bg-navi-surface2 text-navi-bearish'
                   )}>
                   <span>{ok ? '✅' : '❌'}</span>
                   <span className="font-semibold flex-1">{tq.label}</span>
@@ -527,7 +527,7 @@ export function TutorialStep() {
                 </div>
               )
             })}
-            <div className="mt-1 px-3 py-2 rounded-xl bg-indigo-50 text-[11px] text-indigo-600 text-center">
+            <div className="mt-1 px-3 py-2 rounded-xl bg-navi-accent/[0.08] text-[11px] text-navi-accent text-center">
               내 예측: {questions[3]?.choices.find(c => c.v === testAnswers['prediction'])?.icon}{' '}
               {questions[3]?.choices.find(c => c.v === testAnswers['prediction'])?.label} →
               시뮬레이션에서 직접 확인해봐요!
@@ -543,12 +543,12 @@ export function TutorialStep() {
           <div>
             <StepBadge />
             <div className="flex items-center gap-2 mt-1">
-              <p className="text-[13px] font-bold text-gray-900">{q.label}</p>
-              <span className="text-[9px] font-bold text-amber-500 bg-amber-50 px-1.5 py-0.5 rounded-full shrink-0">
+              <p className="text-[13px] font-bold text-navi-text">{q.label}</p>
+              <span className="text-[9px] font-bold text-amber-400 bg-navi-surface2 px-1.5 py-0.5 rounded-full shrink-0">
                 {testQIdx + 1} / {questions.length}
               </span>
             </div>
-            <p className="text-[10px] text-gray-400 mt-0.5">💡 {q.hint}</p>
+            <p className="text-[10px] text-navi-muted mt-0.5">💡 {q.hint}</p>
           </div>
         </div>
 
@@ -557,8 +557,8 @@ export function TutorialStep() {
           {questions.map((_, i) => (
             <div key={i} className={clsx(
               'h-1 rounded-full transition-all duration-300',
-              i < testQIdx  ? 'flex-none w-6 bg-indigo-400' :
-              i === testQIdx ? 'flex-1 bg-indigo-500' :
+              i < testQIdx  ? 'flex-none w-6 bg-navi-accent' :
+              i === testQIdx ? 'flex-1 bg-navi-accent/[0.08]0' :
               'flex-none w-4 bg-gray-200'
             )} />
           ))}
@@ -581,8 +581,8 @@ export function TutorialStep() {
               className={clsx(
                 'flex flex-col items-center py-2.5 rounded-xl border-2 transition-all active:scale-95',
                 testAnswers[q.id] === c.v
-                  ? 'border-indigo-400 bg-indigo-50'
-                  : 'border-gray-200 hover:border-indigo-300 hover:bg-indigo-50'
+                  ? 'border-navi-accent/70 bg-navi-accent/[0.08]'
+                  : 'border-navi-border2 hover:border-navi-accent/50 hover:bg-navi-accent/[0.08]'
               )}
             >
               <span className="text-xl">{c.icon}</span>
@@ -678,11 +678,11 @@ export function TutorialStep() {
                 flexDirection: 'column',
                 pointerEvents: 'auto',
               }}
-              className="bg-white rounded-t-3xl shadow-[0_-8px_48px_rgba(0,0,0,0.18)] overflow-hidden"
+              className="bg-navi-surface border-t border-x border-navi-border rounded-t-2xl shadow-[0_-8px_48px_rgba(0,0,0,0.18)] overflow-hidden"
             >
               {/* 드래그 핸들 */}
               <div className="flex justify-center pt-2.5 flex-shrink-0">
-                <div className="w-9 h-1 bg-gray-200 rounded-full" />
+                <div className="w-9 h-1 bg-white/10 rounded-full" />
               </div>
 
               <AnimatePresence mode="wait">

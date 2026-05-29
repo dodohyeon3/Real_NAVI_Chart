@@ -7,7 +7,6 @@ import { useChartStore } from '@/stores/chartStore'
 import { indicators } from '@/data/indicators'
 import type { IndicatorSlug } from '@/types'
 
-// 추세선·피보나치는 작도 도구로 분리 → 여기서 제외
 const ANALYSIS_TOOLS: IndicatorSlug[] = [
   'moving-average',
   'rsi',
@@ -27,7 +26,7 @@ export function IndicatorToolbar() {
   const [hovered, setHovered] = useState<IndicatorSlug | null>(null)
 
   return (
-    <div id="indicator-toolbar" className="flex flex-wrap gap-2 items-center">
+    <div id="indicator-toolbar" className="flex flex-wrap gap-1.5 items-center">
       {ANALYSIS_TOOLS.map((slug) => {
         const indicator = indicators[slug]
         const isActive  = activeIndicators.has(slug)
@@ -43,15 +42,16 @@ export function IndicatorToolbar() {
             <button
               onClick={() => toggleIndicator(slug)}
               className={clsx(
-                'px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150',
+                'h-8 px-3.5 rounded-lg text-[12px] font-semibold tracking-wide',
+                'transition-all duration-150',
                 isActive
-                  ? 'bg-navi-accent text-white shadow-lg shadow-navi-accent/20'
-                  : 'bg-navi-border text-navi-muted hover:bg-navi-accent/20 hover:text-navi-text'
+                  ? 'bg-navi-accent text-navi-text border border-navi-accent'
+                  : 'bg-navi-surface2 text-navi-secondary border border-navi-border',
+                !isActive && 'hover:border-navi-accent/40 hover:text-navi-text'
               )}
             >
               {SHORT_LABELS[slug]}
             </button>
-
             <ToolTooltip indicator={indicator} visible={hovered === slug} />
           </div>
         )

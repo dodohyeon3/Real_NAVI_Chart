@@ -10,7 +10,7 @@ import { PeriodToolbar } from '@/components/chart/PeriodToolbar'
 import { DrawingToolbar } from '@/components/chart/DrawingToolbar'
 import { TutorialManager } from '@/components/tutorial/TutorialManager'
 import { IndicatorToast } from '@/components/ui/IndicatorToast'
-import { RoundedCard } from '@/components/ui/RoundedCard'
+import { NaviSymbol } from '@/components/ui/NaviSymbol'
 import { useTutorialStore } from '@/stores/tutorialStore'
 import { useChartStore } from '@/stores/chartStore'
 import { useLearnStore } from '@/stores/learnStore'
@@ -71,31 +71,46 @@ function ChartPageInner() {
       <TutorialManager />
       <IndicatorToast slug={toastSlug} onDone={() => setToastSlug(null)} />
 
-      <div className="min-h-screen px-4 py-6 max-w-5xl mx-auto">
-
-        {/* 헤더 */}
-        <div className="flex items-center justify-between mb-4">
-          <Link href="/" className="text-navi-muted text-sm hover:text-navi-text">
-            ← 홈
-          </Link>
-          <div className="text-center">
-            <h1 className="text-navi-text font-bold text-sm">NVIDIA Corporation</h1>
-            <p className="text-navi-muted text-xs">NVDA · NASDAQ</p>
-          </div>
+      {/* ── 헤더 (sticky, slim) ─────────────────────────────── */}
+      <header className="sticky top-0 z-30 h-12 bg-navi-bg/90 backdrop-blur-sm border-b border-navi-border">
+        <div className="h-full max-w-5xl mx-auto px-4 flex items-center justify-between">
+          {/* 좌: 로고 심볼 + 종목 */}
           <div className="flex items-center gap-3">
+            <Link href="/" className="text-navi-text hover:text-navi-accent transition-colors duration-150">
+              <NaviSymbol className="w-5 h-5" />
+            </Link>
+            <div className="w-px h-4 bg-navi-border" />
+            <div className="flex items-baseline gap-2">
+              <span className="text-[14px] font-bold text-navi-text tracking-tight">NVDA</span>
+              <span className="text-[11px] text-navi-muted">NASDAQ</span>
+            </div>
+          </div>
+
+          {/* 우: 네비 */}
+          <div className="flex items-center gap-2">
             <Link
               id="simulate-link"
               href="/simulate"
-              className="text-xs px-2.5 py-1 rounded-lg bg-indigo-500/15 border border-indigo-500/30
-                         text-indigo-300 hover:bg-indigo-500/25 transition-colors font-medium"
+              className="h-7 px-3 text-[11px] font-semibold rounded-lg
+                         text-navi-secondary border border-navi-border
+                         hover:border-navi-accent/40 hover:text-navi-text
+                         transition-all duration-150 flex items-center"
             >
-              🔮 시뮬레이션
+              시뮬레이션
             </Link>
-            <button onClick={start} className="text-xs text-navi-accent hover:underline">
+            <button
+              onClick={start}
+              className="h-7 px-3 text-[11px] font-semibold rounded-lg
+                         bg-navi-accent/15 text-navi-accent border border-navi-accent/30
+                         hover:bg-navi-accent/25 transition-all duration-150"
+            >
               튜토리얼
             </button>
           </div>
         </div>
+      </header>
+
+      <div className="min-h-screen px-4 pt-5 pb-8 max-w-5xl mx-auto">
 
         {/* 기간 · 봉 단위 */}
         <div className="mb-3">
@@ -103,22 +118,22 @@ function ChartPageInner() {
         </div>
 
         {/* 메인 차트 + 서브 차트 */}
-        <RoundedCard padding="sm">
+        <div className="bg-navi-surface border border-navi-border rounded-xl p-3">
           <ChartContainer />
           {showRSI  && <RSIChart />}
           {showMACD && <MACDChart />}
-        </RoundedCard>
+        </div>
 
-        {/* 도구 섹션 */}
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* 도구 섹션 — 2열 그리드 */}
+        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* 분석 도구 */}
           <div
             id="analysis-tools-card"
-            className="bg-navi-surface border border-navi-border rounded-2xl p-4 overflow-visible"
+            className="bg-navi-surface border border-navi-border rounded-xl p-4 overflow-visible"
           >
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-xs font-bold text-navi-text">분석 도구</span>
-              <span className="text-xs text-navi-muted">클릭하면 차트에 표시돼요</span>
+              <span className="text-[10px] font-bold tracking-[0.07em] uppercase text-navi-muted">분석 도구</span>
+              <span className="text-[10px] text-navi-muted opacity-60">클릭하면 차트에 표시돼요</span>
             </div>
             <IndicatorToolbar />
           </div>
@@ -126,34 +141,37 @@ function ChartPageInner() {
           {/* 작도 도구 */}
           <div
             id="drawing-tools-card"
-            className="bg-navi-surface border border-navi-border rounded-2xl p-4"
+            className="bg-navi-surface border border-navi-border rounded-xl p-4"
           >
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-xs font-bold text-navi-text">작도 도구</span>
-              <span className="text-xs text-navi-muted">차트에 직접 그려봐요</span>
+              <span className="text-[10px] font-bold tracking-[0.07em] uppercase text-navi-muted">작도 도구</span>
+              <span className="text-[10px] text-navi-muted opacity-60">차트에 직접 그려봐요</span>
             </div>
             <DrawingToolbar />
           </div>
         </div>
 
-        {/* 지표 상세 링크 */}
-        <div id="indicator-links" className="mt-6">
-          <p className="text-xs text-navi-muted mb-3">지표가 뭔지 더 알아보고 싶다면?</p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+        {/* 지표 설명 링크 */}
+        <div id="indicator-links" className="mt-5">
+          <p className="text-[10px] tracking-[0.07em] uppercase text-navi-muted mb-2.5">
+            지표 더 알아보기
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
             {[
-              ['rsi',            'RSI 설명'],
-              ['macd',           'MACD 설명'],
-              ['bollinger',      '볼린저 밴드 설명'],
-              ['moving-average', '이동평균선 설명'],
-              ['trendline',      '추세선 설명'],
-              ['fibonacci',      '피보나치 설명'],
+              ['rsi',            'RSI'],
+              ['macd',           'MACD'],
+              ['bollinger',      '볼린저 밴드'],
+              ['moving-average', '이동평균선'],
+              ['trendline',      '추세선'],
+              ['fibonacci',      '피보나치'],
             ].map(([slug, label]) => (
               <Link
                 key={slug}
                 href={`/indicator/${slug}`}
                 className="px-3 py-2 bg-navi-surface border border-navi-border
-                           rounded-xl text-xs text-navi-muted hover:border-navi-accent
-                           hover:text-navi-text transition-colors text-center"
+                           rounded-lg text-[11px] text-navi-muted
+                           hover:border-navi-accent/40 hover:text-navi-text
+                           transition-all duration-150 text-center"
               >
                 {label}
               </Link>

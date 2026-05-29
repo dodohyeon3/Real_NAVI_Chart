@@ -6,13 +6,42 @@
   color-scheme: dark;
 }
 
+/* ── Base ─────────────────────────────────────────── */
 body {
-  background-color: #0f0f1a;
-  color: #e2e8f0;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  background-color: #030617;
+  color: #F8F9F7;
+  font-family: 'Inter', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* 스크롤바 스타일 */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #1a1a2e; }
-::-webkit-scrollbar-thumb { background: #2a2a45; border-radius: 3px; }
+/* ── Scrollbar ────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #030617; }
+::-webkit-scrollbar-thumb { background: #0D1828; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #1A2540; }
+
+/* ── Typography ───────────────────────────────────── */
+.tabular { font-variant-numeric: tabular-nums; }
+.tracking-caps { letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* ── NAVI Dividers ────────────────────────────────── */
+.navi-divider-h {
+  height: 1px;
+  background: #0D1828;
+}
+.navi-divider-v {
+  width: 1px;
+  background: #0D1828;
+}
+
+/* ── 30° Background Grid (로고 DNA 각도) ─────────── */
+.navi-grid-bg {
+  background-image: repeating-linear-gradient(
+    30deg,
+    rgba(45, 65, 152, 0.04) 0px,
+    rgba(45, 65, 152, 0.04) 1px,
+    transparent 1px,
+    transparent 56px
+  );
+}
