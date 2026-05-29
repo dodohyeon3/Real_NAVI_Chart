@@ -12,14 +12,34 @@ export interface Indicator {
   exampleImageUrl?: string
 }
 
+export interface JudgmentChoice {
+  value:    string
+  icon:     string
+  label:    string
+  feedback: string  // 선택 후 보여줄 피드백 문장
+}
+
 export interface TutorialStep {
-  id: string
-  targetSelector: string   // CSS selector for spotlight target
-  title: string
-  body: string
-  tips?: string[]          // 불릿 포인트 형태의 추가 안내
-  mission?: string         // 이 단계에서 직접 해볼 미션
-  position: 'top' | 'bottom' | 'left' | 'right'
+  id:             string
+  targetSelector: string
+  title:          string
+  body:           string
+  tips?:          string[]
+  mission?:       string
+  position:       'top' | 'bottom' | 'left' | 'right'
+
+  // ── 인터랙티브 필드 ──────────────────────────────────
+  /** 'candle-click'     : 사용자가 캔들을 직접 클릭해야 진행
+   *  'indicator-toggle' : 특정 지표 버튼을 켜야 진행
+   *  'judgment'         : 3지선다 선택을 해야 진행
+   *  'free'             : 행동 불필요 (읽고 다음으로) */
+  actionRequired?: 'candle-click' | 'indicator-toggle' | 'judgment' | 'free'
+  indicatorKey?:   string          // actionRequired === 'indicator-toggle' 일 때
+  judgment?: {
+    question: string
+    choices:  JudgmentChoice[]
+  }
+  completionMessage?: string       // 행동 완료 후 표시할 메시지
 }
 
 export interface CandleData {

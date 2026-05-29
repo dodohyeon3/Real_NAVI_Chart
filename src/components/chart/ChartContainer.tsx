@@ -11,6 +11,7 @@ import {
   type Time,
 } from 'lightweight-charts'
 import { useChartStore } from '@/stores/chartStore'
+import { useTutorialStore } from '@/stores/tutorialStore'
 import { calcBollingerBands, calcMA } from '@/lib/indicators'
 import { chartSync } from '@/lib/chartSync'
 
@@ -153,6 +154,16 @@ export function ChartContainer() {
 
     // 스크롤/줌 시 피보나치 HTML 레이블 y좌표 재계산
     chart.timeScale().subscribeVisibleTimeRangeChange(updateFibLabels)
+
+    // 튜토리얼 캔들 클릭 감지 (drawingTool 상태와 무관하게 항상 활성)
+    chart.subscribeClick((params) => {
+      const tut = useTutorialStore.getState()
+      if (!tut.isActive || tut.currentStep?.actionRequired !== 'candle-click') return
+      if (!params.time) return
+      const clickedTime = String(params.time)
+      const d = candleDataRef.current.find(c => c.time === clickedTime)
+      if (d) tut.notifyCandleClick(d)
+    })
 
     const onResize = () => {
       if (containerRef.current) {

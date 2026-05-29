@@ -6,13 +6,13 @@ import { TutorialStep } from './TutorialStep'
 import { useTutorialStore } from '@/stores/tutorialStore'
 
 export function TutorialManager() {
-  const { isActive, skip } = useTutorialStore()
+  const { isActive } = useTutorialStore()
 
   return (
     <AnimatePresence>
       {isActive && (
         <>
-          <DarkOverlay onClick={skip} />
+          <DarkOverlay />
           <TutorialStep />
         </>
       )}

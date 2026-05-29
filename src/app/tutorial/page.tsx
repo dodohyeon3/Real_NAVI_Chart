@@ -3,73 +3,148 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 
-const steps = [
-  {
-    step: 1,
-    title: '캔들 차트 읽기',
-    description: '빨간 막대는 오른 날, 파란 막대는 내린 날이에요. 막대의 길이가 그날의 변동폭을 나타내요.',
-    icon: '📊',
-  },
-  {
-    step: 2,
-    title: '분석 도구 사용하기',
-    description: 'RSI, MACD 같은 버튼을 누르면 차트 위에 신호가 나타나요. 각 도구가 어떤 의미인지 마우스를 올리면 바로 볼 수 있어요.',
-    icon: '🔍',
-  },
-  {
-    step: 3,
-    title: '매매 신호 해석하기',
-    description: '지표들이 보내는 신호를 조합해서 "지금 살까, 팔까?"를 판단하는 연습을 해봐요.',
-    icon: '💡',
-  },
+/* 6단계 여정 미리보기 */
+const JOURNEY = [
+  { icon: '📊', label: '캔들 클릭', desc: '하루치 데이터 직접 확인' },
+  { icon: '📈', label: 'MA 켜기',   desc: '이동평균선 눈으로 확인' },
+  { icon: '🤔', label: '추세 판단', desc: '내 눈으로 방향 느끼기' },
+  { icon: '🌡️', label: 'RSI 켜기',  desc: '과열 여부 그래프 확인' },
+  { icon: '🔍', label: 'RSI 읽기',  desc: '수치 의미 직접 해석' },
+  { icon: '🔮', label: '예측 도전', desc: '실제 데이터로 시뮬레이션' },
 ]
+
+const CONTAINER = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08 } },
+}
+const ITEM = {
+  hidden: { opacity: 0, y: 16 },
+  show:   { opacity: 1, y: 0, transition: { ease: [0.16, 1, 0.3, 1] } },
+}
 
 export default function TutorialPage() {
   return (
-    <main className="min-h-screen px-6 py-12 max-w-lg mx-auto">
-      <Link href="/" className="text-navi-muted text-sm hover:text-navi-text">
+    <main className="min-h-screen bg-navi-bg px-5 py-10 max-w-lg mx-auto flex flex-col">
+
+      {/* 뒤로가기 */}
+      <Link href="/" className="text-navi-muted text-sm hover:text-navi-text mb-10 self-start">
         ← 홈
       </Link>
 
-      <div className="mt-8 mb-10">
-        <h1 className="text-2xl font-bold text-navi-text">차트 튜토리얼</h1>
-        <p className="text-navi-muted text-sm mt-2">
-          3단계만 따라오면 차트를 읽을 수 있어요
+      {/* 헤더 */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-8"
+      >
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full
+                        bg-indigo-500/10 border border-indigo-500/25 mb-4">
+          <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+          <span className="text-[11px] font-semibold text-indigo-400">읽기만 하는 설명 NO — 직접 해보는 튜토리얼</span>
+        </div>
+        <h1 className="text-2xl font-black text-navi-text leading-tight">
+          차트,<br />
+          <span className="text-indigo-400">직접 만져보면</span><br />
+          이해돼요
+        </h1>
+        <p className="text-navi-muted text-sm mt-3 leading-relaxed">
+          버튼을 클릭하고, 선을 켜고, 직접 판단하면서<br />
+          차트가 어떻게 읽히는지 느껴봐요.
         </p>
-      </div>
 
-      <div className="space-y-4">
-        {steps.map((item, i) => (
+        {/* 예상 시간 */}
+        <div className="mt-4 flex items-center gap-3 text-xs text-navi-muted">
+          <span>⏱ 약 2~3분</span>
+          <span>·</span>
+          <span>🎯 6단계 실전 체험</span>
+          <span>·</span>
+          <span>✅ 틀려도 괜찮아요</span>
+        </div>
+      </motion.div>
+
+      {/* 6단계 여정 */}
+      <motion.div
+        variants={CONTAINER}
+        initial="hidden"
+        animate="show"
+        className="space-y-2 mb-8"
+      >
+        {JOURNEY.map((step, i) => (
           <motion.div
-            key={item.step}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.12 }}
-            className="bg-navi-surface border border-navi-border rounded-2xl p-5 flex gap-4"
+            key={i}
+            variants={ITEM}
+            className="flex items-center gap-4 bg-navi-surface border border-navi-border
+                       rounded-2xl px-4 py-3"
           >
-            <div className="text-3xl shrink-0">{item.icon}</div>
-            <div>
-              <p className="text-xs text-navi-accent font-semibold mb-1">
-                STEP {item.step}
-              </p>
-              <p className="font-bold text-navi-text text-sm">{item.title}</p>
-              <p className="text-navi-muted text-xs mt-1 leading-relaxed">
-                {item.description}
-              </p>
+            {/* 번호 + 아이콘 */}
+            <div className="flex items-center gap-2.5 shrink-0">
+              <span className="text-[10px] font-bold text-navi-muted w-4 text-right">{i + 1}</span>
+              <span className="text-xl">{step.icon}</span>
             </div>
+
+            {/* 텍스트 */}
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold text-navi-text">{step.label}</p>
+              <p className="text-[11px] text-navi-muted mt-0.5">{step.desc}</p>
+            </div>
+
+            {/* 행동 배지 */}
+            <span className="shrink-0 text-[10px] px-2 py-0.5 rounded-full
+                             bg-indigo-500/10 text-indigo-400 font-medium">
+              직접 해요
+            </span>
           </motion.div>
         ))}
-      </div>
+      </motion.div>
 
-      <div className="mt-8">
+      {/* 강조 문구 */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7 }}
+        className="mb-8 px-4 py-3.5 rounded-2xl bg-navi-surface border border-indigo-500/20"
+      >
+        <p className="text-xs text-indigo-300 leading-relaxed">
+          💡 <strong>틀려도 괜찮아요.</strong> 어떤 버튼을 눌러도 데이터는 사라지지 않아요.
+          실제 차트 위에서 직접 클릭하고 느끼는 게 가장 빠른 학습이에요.
+        </p>
+      </motion.div>
+
+      {/* CTA */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.85 }}
+        className="space-y-3 mt-auto"
+      >
+        {/* 메인 CTA — 튜토리얼 시작 */}
+        <Link
+          href="/chart?onboard=1"
+          className="w-full flex items-center justify-center gap-2 py-4
+                     bg-gradient-to-r from-indigo-600 to-indigo-500
+                     text-white font-bold text-sm rounded-2xl
+                     hover:from-indigo-500 hover:to-indigo-400
+                     shadow-lg shadow-indigo-500/25
+                     transition-all active:scale-[0.98]"
+        >
+          <span>🚀</span>
+          <span>튜토리얼 시작하기</span>
+          <span className="text-indigo-200 text-xs font-normal ml-1">차트 위에서 시작해요</span>
+        </Link>
+
+        {/* 세컨더리 — 바로 차트 보기 */}
         <Link
           href="/chart"
-          className="w-full block text-center py-3.5 bg-navi-accent text-white
-                     font-semibold rounded-2xl hover:bg-indigo-500 transition-colors"
+          className="w-full flex items-center justify-center py-3
+                     border border-navi-border rounded-2xl
+                     text-xs text-navi-muted hover:text-navi-text
+                     hover:border-navi-accent transition-colors"
         >
-          이제 차트 보러 가기
+          건너뛰고 차트 바로 보기
         </Link>
-      </div>
+      </motion.div>
+
     </main>
   )
 }

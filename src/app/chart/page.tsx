@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { ChartContainer } from '@/components/chart/ChartContainer'
 import { RSIChart } from '@/components/chart/RSIChart'
 import { MACDChart } from '@/components/chart/MACDChart'
@@ -17,10 +18,11 @@ import { useLearnStore } from '@/stores/learnStore'
 import { useStockData } from '@/hooks/useStockData'
 import Link from 'next/link'
 
-export default function ChartPage() {
+function ChartPageInner() {
   const { hasCompletedOnce, start } = useTutorialStore()
   const { activeIndicators, drawingTool } = useChartStore()
   const { markIndicator, markDrawing, triedIndicators } = useLearnStore()
+  const searchParams = useSearchParams()
 
   /* ─── 첫 지표 활성화 시 컨텍스트 토스트 ─────────────────────── */
   const [toastSlug, setToastSlug] = useState<string | null>(null)
@@ -32,13 +34,17 @@ export default function ChartPage() {
   const showRSI  = activeIndicators.has('rsi')
   const showMACD = activeIndicators.has('macd')
 
-  /* ── 튜토리얼 자동 시작 (첫 방문) ─────────────────────────── */
+  /* ── 튜토리얼 시작 조건 ─────────────────────────────────────
+     · ?onboard=1 쿼리: /tutorial 페이지에서 명시적으로 시작
+     · 첫 방문(hasCompletedOnce === false): 자동 시작
+  ─────────────────────────────────────────────────────────── */
   useEffect(() => {
-    if (!hasCompletedOnce) {
-      const timer = setTimeout(start, 800)
+    const forceOnboard = searchParams.get('onboard') === '1'
+    if (forceOnboard || !hasCompletedOnce) {
+      const timer = setTimeout(start, 500)
       return () => clearTimeout(timer)
     }
-  }, [hasCompletedOnce, start])
+  }, [hasCompletedOnce, start, searchParams])
 
   /* ── 지표 활성화 감지 → 토스트 + 학습 진행 기록 ──────────── */
   useEffect(() => {
@@ -79,6 +85,7 @@ export default function ChartPage() {
           </div>
           <div className="flex items-center gap-3">
             <Link
+              id="simulate-link"
               href="/simulate"
               className="text-xs px-2.5 py-1 rounded-lg bg-indigo-500/15 border border-indigo-500/30
                          text-indigo-300 hover:bg-indigo-500/25 transition-colors font-medium"
@@ -160,5 +167,13 @@ export default function ChartPage() {
 
       </div>
     </>
+  )
+}
+
+export default function ChartPage() {
+  return (
+    <Suspense>
+      <ChartPageInner />
+    </Suspense>
   )
 }
