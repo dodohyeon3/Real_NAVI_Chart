@@ -421,26 +421,30 @@ export function TutorialStep() {
           />
         )}
 
-        {/* ── SIDE 패널 (reading 모드 — 좌측 플로팅) ── */}
+        {/* ── SIDE 패널 (reading 모드 — 좌측 하단) ── */}
         {showPanel && isSide && (
           <motion.div
             key={`panel-${currentStep.id}-side`}
-            initial={{ x: -28, opacity: 0 }}
-            animate={{ x: 0,   opacity: 1 }}
-            exit={{   x: -28, opacity: 0 }}
+            initial={{ y: 64, opacity: 0 }}
+            animate={{ y: 0,  opacity: 1 }}
+            exit={{   y: 64, opacity: 0 }}
             transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
             style={{
               position:      'fixed',
+              bottom:         0,
               left:           16,
-              top:            80,
-              width:          288,
-              maxHeight:     'calc(100vh - 104px)',
+              width:          320,
+              maxHeight:     `${ph}px`,
               zIndex:         50,
               display:       'flex',
               flexDirection: 'column',
             }}
-            className="bg-white rounded-2xl shadow-[0_8px_48px_rgba(0,0,0,0.22)] border border-gray-100 overflow-hidden"
+            className="bg-white rounded-t-3xl shadow-[0_-8px_48px_rgba(0,0,0,0.18)] overflow-hidden"
           >
+            {/* 드래그 핸들 */}
+            <div className="flex justify-center pt-2.5 flex-shrink-0">
+              <div className="w-9 h-1 bg-gray-200 rounded-full" />
+            </div>
             <AnimatePresence mode="wait">
               <motion.div
                 key={mode}
