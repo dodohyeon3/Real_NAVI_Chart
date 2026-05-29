@@ -191,12 +191,13 @@ function makeChart(el: HTMLDivElement, height: number): IChartApi {
 interface Props { slug: IndicatorSlug }
 
 export function MiniChartPreview({ slug }: Props) {
-  const mainRef   = useRef<HTMLDivElement>(null)
-  const subRef    = useRef<HTMLDivElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)  // 피보나치 레이블 오버레이
-  const [data,    setData]    = useState<CandleData[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error,   setError]   = useState(false)
+  const mainRef = useRef<HTMLDivElement>(null)
+  const subRef  = useRef<HTMLDivElement>(null)
+  const [data,      setData]      = useState<CandleData[]>([])
+  const [loading,   setLoading]   = useState(true)
+  const [error,     setError]     = useState(false)
+  // 피보나치 HTML 레이블 (canvas 대신 React state로 관리)
+  const [fibLabels, setFibLabels] = useState<{ value: number; label: string; color: string; y: number }[]>([])
   const needsSub = slug === 'rsi' || slug === 'macd'
 
   // ── 데이터 fetch (모든 지표 공통: 실제 NVDA 1Y 데이터) ────────────────────
@@ -334,8 +335,8 @@ export function MiniChartPreview({ slug }: Props) {
       const t0 = seg[0].time             as Time
       const t1 = seg[seg.length - 1].time as Time
 
-      // 피보나치 캔버스 레이블용 데이터 (오른쪽 lastValueVisible 대신 왼쪽 canvas에 그림)
-      const fibLabelData: { value: number; label: string; color: string }[] = []
+      // 피보나치 레벨 데이터 수집
+      const fibLevelData: { value: number; label: string; color: string }[] = []
       FIB_LEVELS.forEach(({ ratio, label, color }) => {
         const value   = PEAK - RANGE * ratio
         const isBest  = fibResult
@@ -346,45 +347,25 @@ export function MiniChartPreview({ slug }: Props) {
           color,
           lineWidth:        isBest ? 2 : 1,
           lineStyle:        2,
-          lastValueVisible: false,  // 오른쪽 레이블 제거
+          lastValueVisible: false,
           priceLineVisible: false,
         }).setData([{ time: t0, value }, { time: t1, value }] as any)
-        fibLabelData.push({ value, label: displayLabel, color })
+        fibLevelData.push({ value, label: displayLabel, color })
       })
 
-      // fitContent 처리 후 캔버스에 왼쪽 레이블 그리기
-      const drawFibOnCanvas = () => {
-        const canvas = canvasRef.current
-        if (!canvas || !mainRef.current) return
-        canvas.width  = mainRef.current.clientWidth
-        canvas.height = mainHeight
-        const ctx = canvas.getContext('2d')
-        if (!ctx) return
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-        ctx.save()
-        ctx.font = 'bold 9px system-ui, sans-serif'
-        fibLabelData.forEach(({ value, label, color }) => {
-          const y = candleSeries.priceToCoordinate(value)
-          if (y === null || y < 2 || y > mainHeight - 2) return
-          const tw = ctx.measureText(label).width
-          const bw = tw + 8, bh = 14
-          const bx = 6, by = y - bh / 2
-          ctx.fillStyle = color + 'dd'
-          ctx.beginPath()
-          if (typeof (ctx as any).roundRect === 'function') {
-            ;(ctx as any).roundRect(bx, by, bw, bh, 3)
-          } else {
-            ctx.rect(bx, by, bw, bh)
-          }
-          ctx.fill()
-          ctx.fillStyle = '#fff'
-          ctx.textAlign = 'center'
-          ctx.textBaseline = 'middle'
-          ctx.fillText(label, bx + bw / 2, y)
-        })
-        ctx.restore()
+      // y좌표 계산 → HTML 레이블 state 업데이트
+      const computeFibLabels = () => {
+        setFibLabels(
+          fibLevelData
+            .map(lv => ({ ...lv, y: candleSeries.priceToCoordinate(lv.value) ?? -999 }))
+            .filter(lv => lv.y >= 2 && lv.y <= mainHeight - 2)
+        )
       }
-      requestAnimationFrame(drawFibOnCanvas)
+
+      // time range 변화(fitContent, 스크롤) 시 y좌표 재계산
+      mainChart.timeScale().subscribeVisibleTimeRangeChange(computeFibLabels)
+      // RAF fallback: fitContent가 동기적으로 time range를 발화하지 않을 경우 대비
+      requestAnimationFrame(computeFibLabels)
 
       // 되돌림 저점에 반등 화살표
       const bounceIdx = fibResult?.bounceIdx
@@ -450,6 +431,7 @@ export function MiniChartPreview({ slug }: Props) {
       window.removeEventListener('resize', onResize)
       mainChart.remove()
       subChart?.remove()
+      setFibLabels([])  // slug 변경 시 이전 레이블 초기화
     }
   }, [data, slug, needsSub])
 
@@ -500,15 +482,30 @@ export function MiniChartPreview({ slug }: Props) {
           ))}
         </div>
       )}
-      {/* 피보나치일 때는 canvas overlay 추가 (왼쪽 레이블 그리기용) */}
+      {/* 피보나치 레이블 HTML 오버레이 */}
       <div className="relative w-full">
         <div ref={mainRef} className="w-full rounded-xl overflow-hidden" />
-        {slug === 'fibonacci' && (
-          <canvas
-            ref={canvasRef}
-            className="absolute top-0 left-0 pointer-events-none rounded-xl"
-          />
-        )}
+        {fibLabels.map((lv, i) => (
+          <div
+            key={i}
+            className="absolute pointer-events-none select-none"
+            style={{
+              left: 4,
+              top: lv.y - 7,
+              backgroundColor: lv.color + 'dd',
+              color: '#fff',
+              fontSize: '9px',
+              fontWeight: 700,
+              padding: '1px 5px',
+              borderRadius: 3,
+              lineHeight: 1.6,
+              zIndex: 10,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {lv.label}
+          </div>
+        ))}
       </div>
       {needsSub && <div ref={subRef} className="w-full rounded-xl overflow-hidden mt-0.5" />}
       <p className="text-right text-xs text-navi-border mt-1">

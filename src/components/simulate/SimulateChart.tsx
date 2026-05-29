@@ -197,8 +197,10 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
   const mouseRef    = useRef<{ x: number; y: number } | null>(null)
   const toolRef     = useRef<DrawTool>('none')
   const revRef      = useRef(false)
-  // 피보나치 레벨 캔버스 레이블용 (오른쪽 레이블 제거 후 왼쪽에 직접 그리기)
+  // 피보나치 레벨 데이터 저장 (HTML 오버레이 레이블용)
   const fibLevelsRef = useRef<{ value: number; label: string; color: string }[]>([])
+  // HTML 피보나치 레이블 state (React re-render로 표시)
+  const [fibLabels, setFibLabels] = useState<{ value: number; label: string; color: string; y: number }[]>([])
 
   /* ── 데이터 변경 추적 (MA/BB toggle 시 setData 재호출 방지) ── */
   const prevPastRef     = useRef<CandleData[] | null>(null)
@@ -251,6 +253,17 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
     ctx.restore()
   }, [pastData])
 
+  // 피보나치 레이블 y좌표 재계산 → HTML 오버레이 업데이트
+  const updateFibLabels = useCallback(() => {
+    const series = candleRef.current
+    if (!series || fibLevelsRef.current.length === 0) { setFibLabels([]); return }
+    setFibLabels(
+      fibLevelsRef.current
+        .map(lv => ({ ...lv, y: series.priceToCoordinate(lv.value) ?? -999 }))
+        .filter(lv => lv.y >= 2 && lv.y <= MAIN_H - 2)
+    )
+  }, [])
+
   const drawDot = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number, color = '#6c63ff') => {
     ctx.save()
     ctx.beginPath(); ctx.arc(x, y, 6, 0, Math.PI * 2)
@@ -267,29 +280,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
     if (!ctx) return
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     drawCutoff(ctx, chart)
-
-    // ── 피보나치 레벨 레이블을 왼쪽에 그리기 (오른쪽 lastValueVisible 대체) ──
-    const fibLevels = fibLevelsRef.current
-    if (fibLevels.length > 0 && series) {
-      ctx.save()
-      ctx.font = 'bold 9px system-ui, sans-serif'
-      fibLevels.forEach(({ value, label, color }) => {
-        const y = series.priceToCoordinate(value)
-        if (y === null || y < 2 || y > MAIN_H - 2) return
-        const tw = ctx.measureText(label).width
-        const bw = tw + 8, bh = 14
-        const bx = 6, by = y - bh / 2
-        // 배경 박스
-        ctx.fillStyle = color + 'dd'   // hex + alpha(87%)
-        ctx.beginPath(); rrect(ctx, bx, by, bw, bh, 3); ctx.fill()
-        // 텍스트
-        ctx.fillStyle = '#fff'
-        ctx.textAlign = 'center'
-        ctx.textBaseline = 'middle'
-        ctx.fillText(label, bx + bw / 2, y)
-      })
-      ctx.restore()
-    }
+    // 피보나치 레이블은 HTML 오버레이로 표시 (canvas 그리기 불필요)
 
     const pending = pendingRef.current
     const mouse   = mouseRef.current
@@ -330,8 +321,9 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
       wickUpColor: '#26a69a', wickDownColor: '#ef5350',
     })
     chartRef.current = chart; candleRef.current = series
-    // TimeRange 기반 sync: RSI/MACD는 warmup 바가 달라 LogicalRange로 맞추면 날짜 어긋남
+    // TimeRange 기반 sync + 피보나치 HTML 레이블 y좌표 재계산
     chart.timeScale().subscribeVisibleTimeRangeChange((range) => {
+      updateFibLabels()
       redrawCanvas()
       if (!range) return
       // 이미 생성된 서브차트에만 setVisibleRange (없으면 무시 — 각 서브차트 effect의 RAF가 초기 sync 담당)
@@ -356,7 +348,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
       rsiChart.current?.remove();  rsiChart.current  = null; rsiSeries.current  = null
       macdChart.current?.remove(); macdChart.current = null; macdSeries.current = null
     }
-  }, [syncCanvas, redrawCanvas])  // eslint-disable-line react-hooks/exhaustive-deps
+  }, [syncCanvas, redrawCanvas, updateFibLabels])  // eslint-disable-line react-hooks/exhaustive-deps
 
   /* ══ 메인 캔들 + BB/MA ══════════════════════════════════════ */
   useEffect(() => {
@@ -600,10 +592,12 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
           drawnRef.current.push(s)
           fibLevelsRef.current.push({ value, label, color })
         })
-        redrawCanvas(); setDrawStep(0); setTool('none')
+        redrawCanvas()
+        requestAnimationFrame(updateFibLabels)  // 차트 좌표계 정착 후 y좌표 계산
+        setDrawStep(0); setTool('none')
       }
     }
-  }, [drawCutoff, drawDot, redrawCanvas, setTool, pastData, futureData, revealed])
+  }, [drawCutoff, drawDot, redrawCanvas, setTool, updateFibLabels, pastData, futureData, revealed])
 
   useEffect(() => {
     const chart = chartRef.current
@@ -611,7 +605,8 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
     if (drawTool === 'erase') {
       drawnRef.current.forEach(s => { try { chart.removeSeries(s) } catch {} })
       drawnRef.current = []; pendingRef.current = null
-      fibLevelsRef.current = []   // 피보나치 캔버스 레이블도 초기화
+      fibLevelsRef.current = []
+      setFibLabels([])   // HTML 레이블 제거
       redrawCanvas(); setDrawStep(0); setTool('none'); return
     }
     if (drawTool === 'none') return
@@ -673,6 +668,28 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
         <div className="relative" style={{ cursor }}>
           <div ref={mainRef} className="w-full rounded-xl overflow-hidden" />
           <canvas ref={canvasRef} className="absolute top-0 left-0 pointer-events-none" style={{ height: MAIN_H, borderRadius: '0.75rem' }} />
+          {/* 피보나치 레이블 HTML 오버레이 */}
+          {fibLabels.map((lv, i) => (
+            <div
+              key={i}
+              className="absolute pointer-events-none select-none"
+              style={{
+                left: 4,
+                top: lv.y - 7,
+                backgroundColor: lv.color + 'dd',
+                color: '#fff',
+                fontSize: '9px',
+                fontWeight: 700,
+                padding: '1px 5px',
+                borderRadius: 3,
+                lineHeight: 1.6,
+                zIndex: 10,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {lv.label}
+            </div>
+          ))}
         </div>
 
         {showRSI && (
