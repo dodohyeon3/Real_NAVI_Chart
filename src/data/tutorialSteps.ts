@@ -42,6 +42,7 @@ export const tutorialSteps: TutorialStep[] = [
     id:             'ma-toggle',
     targetSelector: '#btn-moving-average',
     position:       'top',
+    clearDrawingsOnEnter: true,
     title:          '이동평균선(MA) — 방향을 선으로 확인해요',
     body:           'MA는 "최근 N일 평균 가격"을 이은 선이에요. 방금 직접 그어본 추세선처럼, MA도 가격의 방향을 보여줘요.\n\n차이가 있다면 — MA는 자동으로 계산돼서 흔들림 없이 추세를 보여줘요.',
     mission:        '아래 분석 도구에서 MA 버튼을 클릭해보세요',
@@ -222,13 +223,13 @@ export const tutorialSteps: TutorialStep[] = [
       choices: [
         {
           value:    'squeeze',
-          icon:     '←→',
+          icon:     '→←',
           label:    '좁아지고 있다',
           feedback: '밴드 스퀴즈! 곧 위아래 어느 방향으로든 큰 움직임이 올 수 있어요.',
         },
         {
           value:    'wide',
-          icon:     '↔',
+          icon:     '←→',
           label:    '넓어지고 있다',
           feedback: '변동성이 확대되는 구간이에요. 강하게 움직이고 있다는 뜻이에요.',
         },
@@ -263,7 +264,24 @@ export const tutorialSteps: TutorialStep[] = [
   },
 
   // ══════════════════════════════════════════════════════════
-  // STEP 12  종합 차트 읽기 테스트
+  // STEP 12  심화 학습 안내 — 지표 더 알아보기
+  // ══════════════════════════════════════════════════════════
+  {
+    id:             'deeper-learning',
+    targetSelector: '#indicator-links',
+    position:       'top',
+    title:          '더 깊이 배우고 싶다면',
+    body:           '튜토리얼에서는 각 지표의 핵심 개념만 다뤘어요.\n\n실제 투자에서는 훨씬 다양한 해석이 가능하고, 활용법도 훨씬 풍부해요.\n\n아래 "지표 더 알아보기"에서 각 지표의 원리와 실전 활용법을 언제든 더 자세히 배울 수 있어요.',
+    tips: [
+      '"지표 더 알아보기"는 튜토리얼 종료 후에도 항상 접근할 수 있어요',
+      '지표 하나를 클릭하면 원리, 해석법, 실전 팁이 자세히 나와요',
+    ],
+    mission:        '"지표 더 알아보기" 중 하나를 눌러봐요 (안 눌러도 다음으로 넘어갈 수 있어요)',
+    actionRequired: 'free',
+  },
+
+  // ══════════════════════════════════════════════════════════
+  // STEP 13  종합 차트 분석 테스트
   // MA + RSI + MACD 자동으로 켜짐
   // ══════════════════════════════════════════════════════════
   {

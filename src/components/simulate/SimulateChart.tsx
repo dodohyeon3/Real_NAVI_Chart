@@ -54,91 +54,83 @@ const INDICATOR_BTNS = [
   { key: 'macd',           label: 'MACD', desc: 'MACD' },
 ] as const
 
-/* ─── 지표 신호 분석 ─────────────────────────────────────────── */
-function analyzeSignals(data: CandleData[], activeInds: Set<string>): Signal[] {
+/* ─── 지표 신호 분석 — 항상 4개 전체 분석 ──────────────────── */
+function analyzeSignals(data: CandleData[]): Signal[] {
   const signals: Signal[] = []
   if (data.length < 30) return signals
   const lastClose = data[data.length - 1].close
 
   // ── MA ──
-  if (activeInds.has('moving-average')) {
-    const ma20 = calcMA(data, 20)
-    const ma60 = calcMA(data, 60)
-    const last20 = ma20[ma20.length - 1]?.value
-    const last60 = ma60[ma60.length - 1]?.value
-    if (last20 !== undefined && last60 !== undefined) {
-      const lb = Math.min(10, ma20.length - 2)
-      const prev20 = ma20[ma20.length - 1 - lb]?.value ?? last20
-      const prev60 = ma60[ma60.length - 1 - lb]?.value ?? last60
-      const currAbove = last20 > last60
-      const prevAbove = prev20 > prev60
-      if (!prevAbove && currAbove) {
-        signals.push({ name: 'MA', icon: 'MA', type: 'bullish', label: '골든 크로스 발생', detail: 'MA20이 MA60을 위로 돌파 → 상승 전환 신호였어요' })
-      } else if (prevAbove && !currAbove) {
-        signals.push({ name: 'MA', icon: 'MA', type: 'bearish', label: '데드 크로스 발생', detail: 'MA20이 MA60 아래로 교차 → 하락 전환 신호였어요' })
-      } else if (currAbove) {
-        signals.push({ name: 'MA', icon: 'MA', type: 'bullish', label: '상승 추세 유지', detail: `MA20($${last20.toFixed(0)})이 MA60($${last60.toFixed(0)}) 위 → 상승 흐름이었어요` })
-      } else {
-        signals.push({ name: 'MA', icon: 'MA', type: 'bearish', label: '하락 추세', detail: `MA20($${last20.toFixed(0)})이 MA60($${last60.toFixed(0)}) 아래 → 하락 흐름이었어요` })
-      }
+  const ma20 = calcMA(data, 20)
+  const ma60 = calcMA(data, 60)
+  const last20 = ma20[ma20.length - 1]?.value
+  const last60 = ma60[ma60.length - 1]?.value
+  if (last20 !== undefined && last60 !== undefined) {
+    const lb = Math.min(10, ma20.length - 2)
+    const prev20 = ma20[ma20.length - 1 - lb]?.value ?? last20
+    const prev60 = ma60[ma60.length - 1 - lb]?.value ?? last60
+    const currAbove = last20 > last60
+    const prevAbove = prev20 > prev60
+    if (!prevAbove && currAbove) {
+      signals.push({ name: 'MA', icon: 'MA', type: 'bullish', label: '골든 크로스 발생', detail: 'MA20이 MA60을 위로 돌파 → 상승 전환 신호였어요' })
+    } else if (prevAbove && !currAbove) {
+      signals.push({ name: 'MA', icon: 'MA', type: 'bearish', label: '데드 크로스 발생', detail: 'MA20이 MA60 아래로 교차 → 하락 전환 신호였어요' })
+    } else if (currAbove) {
+      signals.push({ name: 'MA', icon: 'MA', type: 'bullish', label: '상승 추세 유지', detail: `MA20($${last20.toFixed(0)})이 MA60($${last60.toFixed(0)}) 위 → 상승 흐름이었어요` })
+    } else {
+      signals.push({ name: 'MA', icon: 'MA', type: 'bearish', label: '하락 추세', detail: `MA20($${last20.toFixed(0)})이 MA60($${last60.toFixed(0)}) 아래 → 하락 흐름이었어요` })
     }
   }
 
   // ── RSI ──
-  if (activeInds.has('rsi')) {
-    const rsiData = calcRSI(data)
-    const lastRSI = rsiData[rsiData.length - 1]?.value
-    if (lastRSI !== undefined) {
-      if (lastRSI >= 70) {
-        signals.push({ name: 'RSI', icon: 'RSI', type: 'bearish', label: `${lastRSI.toFixed(0)} — 과매수`, detail: '70 이상 과열 상태 → 조정 가능성이 있었어요' })
-      } else if (lastRSI <= 30) {
-        signals.push({ name: 'RSI', icon: 'RSI', type: 'bullish', label: `${lastRSI.toFixed(0)} — 과매도`, detail: '30 이하 침체 상태 → 반등 가능성이 있었어요' })
-      } else {
-        const sub = lastRSI > 50 ? '강세 기조' : '약세 기조'
-        signals.push({ name: 'RSI', icon: 'RSI', type: 'neutral', label: `${lastRSI.toFixed(0)} — 중립`, detail: `중립 구간 (${sub}) → 확실한 방향 신호가 없었어요` })
-      }
+  const rsiData = calcRSI(data)
+  const lastRSI = rsiData[rsiData.length - 1]?.value
+  if (lastRSI !== undefined) {
+    if (lastRSI >= 70) {
+      signals.push({ name: 'RSI', icon: 'RSI', type: 'bearish', label: `${lastRSI.toFixed(0)} — 과매수`, detail: '70 이상 과열 상태 → 조정 가능성이 있었어요' })
+    } else if (lastRSI <= 30) {
+      signals.push({ name: 'RSI', icon: 'RSI', type: 'bullish', label: `${lastRSI.toFixed(0)} — 과매도`, detail: '30 이하 침체 상태 → 반등 가능성이 있었어요' })
+    } else {
+      const sub = lastRSI > 50 ? '강세 기조' : '약세 기조'
+      signals.push({ name: 'RSI', icon: 'RSI', type: 'neutral', label: `${lastRSI.toFixed(0)} — 중립`, detail: `중립 구간 (${sub}) → 확실한 방향 신호가 없었어요` })
     }
   }
 
   // ── MACD ──
-  if (activeInds.has('macd')) {
-    const md   = calcMACD(data)
-    const valid = md.filter(d => d.signal !== null)
-    if (valid.length >= 5) {
-      const last  = valid[valid.length - 1]
-      const prev  = valid[valid.length - 5]
-      const cAbove = last.macd > (last.signal ?? 0)
-      const pAbove = prev.macd > (prev.signal ?? 0)
-      if (!pAbove && cAbove) {
-        signals.push({ name: 'MACD', icon: 'MACD', type: 'bullish', label: '상향 교차 (매수 신호)', detail: 'MACD선이 시그널선을 위로 돌파 → 매수 신호가 발생했어요' })
-      } else if (pAbove && !cAbove) {
-        signals.push({ name: 'MACD', icon: 'MACD', type: 'bearish', label: '하향 교차 (매도 신호)', detail: 'MACD선이 시그널선 아래로 교차 → 매도 신호가 발생했어요' })
-      } else if (cAbove) {
-        signals.push({ name: 'MACD', icon: 'MACD', type: 'bullish', label: '상승 모멘텀', detail: 'MACD선이 시그널선 위 → 상승 흐름이 유지되고 있었어요' })
-      } else {
-        signals.push({ name: 'MACD', icon: 'MACD', type: 'bearish', label: '하락 모멘텀', detail: 'MACD선이 시그널선 아래 → 하락 압력이 있었어요' })
-      }
+  const md    = calcMACD(data)
+  const valid = md.filter(d => d.signal !== null)
+  if (valid.length >= 5) {
+    const last  = valid[valid.length - 1]
+    const prev  = valid[valid.length - 5]
+    const cAbove = last.macd > (last.signal ?? 0)
+    const pAbove = prev.macd > (prev.signal ?? 0)
+    if (!pAbove && cAbove) {
+      signals.push({ name: 'MACD', icon: 'MACD', type: 'bullish', label: '상향 교차 (매수 신호)', detail: 'MACD선이 시그널선을 위로 돌파 → 매수 신호가 발생했어요' })
+    } else if (pAbove && !cAbove) {
+      signals.push({ name: 'MACD', icon: 'MACD', type: 'bearish', label: '하향 교차 (매도 신호)', detail: 'MACD선이 시그널선 아래로 교차 → 매도 신호가 발생했어요' })
+    } else if (cAbove) {
+      signals.push({ name: 'MACD', icon: 'MACD', type: 'bullish', label: '상승 모멘텀', detail: 'MACD선이 시그널선 위 → 상승 흐름이 유지되고 있었어요' })
+    } else {
+      signals.push({ name: 'MACD', icon: 'MACD', type: 'bearish', label: '하락 모멘텀', detail: 'MACD선이 시그널선 아래 → 하락 압력이 있었어요' })
     }
   }
 
   // ── BB ──
-  if (activeInds.has('bollinger')) {
-    const bb      = calcBollingerBands(data)
-    const upper   = bb.upper[bb.upper.length - 1]?.value
-    const middle  = bb.middle[bb.middle.length - 1]?.value
-    const lower   = bb.lower[bb.lower.length - 1]?.value
-    if (upper !== undefined && lower !== undefined && middle !== undefined) {
-      const range = upper - lower
-      const bwPct = middle > 0 ? (range / middle) * 100 : 0
-      if (lastClose > upper) {
-        signals.push({ name: 'BB', icon: 'BB', type: 'bearish', label: '상단 밴드 돌파', detail: `가격($${lastClose.toFixed(0)})이 상단 밴드($${upper.toFixed(0)}) 위 → 과매수 가능성이 있었어요` })
-      } else if (lastClose < lower) {
-        signals.push({ name: 'BB', icon: 'BB', type: 'bullish', label: '하단 밴드 이탈', detail: `가격($${lastClose.toFixed(0)})이 하단 밴드($${lower.toFixed(0)}) 아래 → 과매도 가능성이 있었어요` })
-      } else {
-        const pos = Math.round(((lastClose - lower) / range) * 100)
-        const bwDesc = bwPct < 4 ? '매우 좁음 — 큰 움직임 예고' : bwPct < 8 ? '보통' : '넓음'
-        signals.push({ name: 'BB', icon: 'BB', type: 'neutral', label: `밴드 ${pos}% 위치 (폭: ${bwDesc})`, detail: bwPct < 4 ? '밴드가 매우 좁아졌어요 → 곧 큰 변동이 올 수 있었어요' : `밴드 내 ${pos}% 위치에서 마감했어요` })
-      }
+  const bb     = calcBollingerBands(data)
+  const upper  = bb.upper[bb.upper.length - 1]?.value
+  const middle = bb.middle[bb.middle.length - 1]?.value
+  const lower  = bb.lower[bb.lower.length - 1]?.value
+  if (upper !== undefined && lower !== undefined && middle !== undefined) {
+    const range = upper - lower
+    const bwPct = middle > 0 ? (range / middle) * 100 : 0
+    if (lastClose > upper) {
+      signals.push({ name: 'BB', icon: 'BB', type: 'bearish', label: '상단 밴드 돌파', detail: `가격($${lastClose.toFixed(0)})이 상단 밴드($${upper.toFixed(0)}) 위 → 과매수 가능성이 있었어요` })
+    } else if (lastClose < lower) {
+      signals.push({ name: 'BB', icon: 'BB', type: 'bullish', label: '하단 밴드 이탈', detail: `가격($${lastClose.toFixed(0)})이 하단 밴드($${lower.toFixed(0)}) 아래 → 과매도 가능성이 있었어요` })
+    } else {
+      const pos = Math.round(((lastClose - lower) / range) * 100)
+      const bwDesc = bwPct < 4 ? '매우 좁음 — 큰 움직임 예고' : bwPct < 8 ? '보통' : '넓음'
+      signals.push({ name: 'BB', icon: 'BB', type: 'neutral', label: `밴드 ${pos}% 위치 (폭: ${bwDesc})`, detail: bwPct < 4 ? '밴드가 매우 좁아졌어요 → 곧 큰 변동이 올 수 있었어요' : `밴드 내 ${pos}% 위치에서 마감했어요` })
     }
   }
 
@@ -629,8 +621,8 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
   /* ══ 예측 확정 → 결과 공개 ═══════════════════════════════════ */
   const handleConfirmPrediction = useCallback((choice: Choice) => {
     if (futureData.length === 0) return
-    // 예측 시점 지표 분석
-    const signals = analyzeSignals(pastData, activeInds)
+    // 예측 시점 지표 분석 — 항상 전체 4개 지표 분석
+    const signals = analyzeSignals(pastData)
     setPrediction(choice)
     setDebriefSignals(signals)
     revRef.current = true
@@ -783,7 +775,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
       {/* ── 도구 패널 ─────────────────────────────────────────── */}
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-navi-surface border border-navi-border rounded-xl p-3 overflow-visible">
-          <p className="text-[11px] font-bold text-navi-muted mb-2">분석 도구</p>
+          <p className="text-[11px] font-bold text-navi-secondary mb-2">분석 도구</p>
           <div className="flex flex-wrap gap-1.5">
             {INDICATOR_BTNS.map(({ key, label }) => (
               <button key={key} onClick={() => toggleInd(key)}
@@ -791,7 +783,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
                   'px-2.5 py-1 rounded-lg text-xs font-semibold transition-all',
                   activeInds.has(key)
                     ? 'bg-navi-action text-white'
-                    : 'bg-navi-surface2 text-navi-secondary border border-navi-border hover:border-navi-action/40 hover:text-navi-text'
+                    : 'bg-navi-surface2 text-navi-text border border-navi-border hover:border-navi-action/40'
                 )}>
                 {label}
               </button>
@@ -800,7 +792,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
         </div>
 
         <div className="bg-navi-surface border border-navi-border rounded-xl p-3">
-          <p className="text-[11px] font-bold text-navi-muted mb-2">작도 도구</p>
+          <p className="text-[11px] font-bold text-navi-secondary mb-2">작도 도구</p>
           <div className="flex flex-wrap gap-1.5">
             {([
               { v: 'trendline', icon: '↗', label: '추세선'  },
@@ -811,14 +803,14 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
                   'flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all',
                   drawTool === v
                     ? 'bg-amber-500/12 border-amber-500/40 text-navi-text'
-                    : 'border-navi-border text-navi-muted hover:border-navi-border2 hover:text-navi-text'
+                    : 'border-navi-border text-navi-text hover:border-navi-border2'
                 )}>
                 <span>{icon}</span>{label}
                 {drawTool === v && <span className="w-1.5 h-1.5 rounded-full bg-amber-400/70 animate-pulse" />}
               </button>
             ))}
             <button onClick={() => setTool('erase')}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs border border-navi-border text-navi-muted hover:border-navi-border2 hover:text-navi-text transition-all">
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs border border-navi-border text-navi-secondary hover:border-navi-border2 hover:text-navi-text transition-all">
               ✕ 지우기
             </button>
           </div>
@@ -928,16 +920,11 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
 
           {/* 디브리핑 카드 */}
           <div className="bg-navi-surface border border-navi-border rounded-xl p-4">
-            <p className="text-[11px] font-bold text-navi-muted mb-3 uppercase tracking-[0.07em]">
+            <p className="text-[11px] font-bold text-navi-secondary mb-3 uppercase tracking-[0.07em]">
               예측 시점, 지표들은 이렇게 말하고 있었어요
             </p>
 
-            {debriefSignals.length === 0 ? (
-              <div className="text-center py-4">
-                <p className="text-sm text-navi-muted">분석 도구를 사용하지 않으셨어요.</p>
-                <p className="text-xs text-navi-secondary mt-1">다음엔 MA, RSI, MACD를 켜고 분석해보세요!</p>
-              </div>
-            ) : (
+            {debriefSignals.length > 0 && (
               <div className="space-y-2.5">
                 {debriefSignals.map((sig, i) => (
                   <div key={i} className="flex items-start gap-3">
@@ -958,7 +945,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
                 ))}
 
                 <div className="mt-2 pt-2 border-t border-navi-border">
-                  <p className="text-[12px] text-navi-muted leading-relaxed">
+                  <p className="text-[12px] text-navi-secondary leading-relaxed">
                     지표는 힌트일 뿐이에요. 여러 신호가 같은 방향을 가리킬수록 신뢰도가 올라가요.
                     틀렸다면 어느 신호를 놓쳤는지 확인해봐요!
                   </p>

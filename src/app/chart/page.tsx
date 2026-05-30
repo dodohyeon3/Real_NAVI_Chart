@@ -99,9 +99,9 @@ function ChartPageInner() {
             <Link
               id="simulate-link"
               href="/simulate"
-              className="h-7 px-3 text-[11px] font-medium rounded-lg flex items-center
-                         text-navi-muted border border-navi-border
-                         hover:border-navi-border2 hover:text-navi-secondary
+              className="h-7 px-3 text-[11px] font-semibold rounded-lg flex items-center
+                         text-navi-text border border-navi-border2
+                         hover:border-navi-action/40 hover:bg-navi-action/[0.06]
                          transition-all duration-150"
             >
               시뮬레이션
@@ -163,7 +163,7 @@ function ChartPageInner() {
 
         {/* 지표 설명 링크 */}
         <div id="indicator-links" className="mt-5">
-          <p className="text-[11px] tracking-[0.07em] uppercase text-navi-muted mb-3">
+          <p className="text-[11px] font-semibold tracking-[0.07em] uppercase text-navi-secondary mb-3">
             지표 더 알아보기
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
@@ -178,9 +178,9 @@ function ChartPageInner() {
               <Link
                 key={slug}
                 href={`/indicator/${slug}`}
-                className="px-3 py-2 bg-navi-surface border border-navi-border
-                           rounded-lg text-[11px] text-navi-muted
-                           hover:border-navi-accent/40 hover:text-navi-text
+                className="px-3 py-2.5 bg-navi-surface border border-navi-border
+                           rounded-lg text-[12px] font-medium text-navi-secondary
+                           hover:border-navi-accent/40 hover:text-navi-text hover:bg-navi-surface2
                            transition-all duration-150 text-center"
               >
                 {label}

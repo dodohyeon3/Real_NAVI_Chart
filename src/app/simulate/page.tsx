@@ -141,7 +141,7 @@ export default function SimulatePage() {
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           {['분석 도구로 지표 추가', '작도 도구로 직접 그리기', '결과 보기로 정답 확인', '다른 구간으로 반복 연습'].map(t => (
-            <span key={t} className="text-[11px] px-2.5 py-1 rounded-full bg-navi-surface2 border border-navi-border2 text-navi-muted">
+            <span key={t} className="text-[11px] px-2.5 py-1 rounded-full bg-navi-surface2 border border-navi-border2 text-navi-secondary">
               {t}
             </span>
           ))}

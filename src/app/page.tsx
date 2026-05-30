@@ -98,7 +98,7 @@ export default function LandingPage() {
             className="w-1 h-1 bg-navi-border2 shrink-0 inline-block"
             style={{ clipPath: 'polygon(50% 0%,100% 50%,50% 100%,0% 50%)' }}
           />
-          <span>15단계 실습</span>
+          <span>16단계 실습</span>
           <span
             className="w-1 h-1 bg-navi-border2 shrink-0 inline-block"
             style={{ clipPath: 'polygon(50% 0%,100% 50%,50% 100%,0% 50%)' }}
