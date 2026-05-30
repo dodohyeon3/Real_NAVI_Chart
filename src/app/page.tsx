@@ -46,11 +46,18 @@ export default function LandingPage() {
 
       {/* ── 브랜드 헤더 ─────────────────────────────────── */}
       <div className="flex flex-col items-center mb-10 relative z-10">
-        {/* NAVI Chart 로고 — 원본 SVG 파일 그대로 */}
+        {/* Dark 모드 로고 */}
         <img
           src="/navi-logo.svg"
           alt="NAVI Chart"
-          className="w-80 h-auto select-none"
+          className="navi-logo-dark w-80 h-auto select-none"
+          draggable={false}
+        />
+        {/* Light 모드 로고 */}
+        <img
+          src="/navi-logo-light.svg"
+          alt="NAVI Chart"
+          className="navi-logo-light w-80 h-auto select-none"
           draggable={false}
         />
       </div>

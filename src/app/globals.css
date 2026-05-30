@@ -183,3 +183,12 @@ body {
 html.light .chart-container-border {
   border-color: rgb(var(--navi-border));
 }
+
+/* ── 테마별 로고 토글 ──────────────────────────────────────
+   Dark 모드(기본): dark 로고 표시, light 로고 숨김
+   Light 모드:      light 로고 표시, dark 로고 숨김          */
+.navi-logo-dark  { display: block; }
+.navi-logo-light { display: none;  }
+
+html.light .navi-logo-dark  { display: none;  }
+html.light .navi-logo-light { display: block; }
