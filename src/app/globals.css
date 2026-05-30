@@ -2,83 +2,184 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ══════════════════════════════════════════════════════════
+   NAVI Design System — CSS 변수 기반 테마 시스템
+   Dark(기본) / Light 두 모드 지원
+   ────────────────────────────────────────────────────────
+   RGB 채널값 (공백 구분): rgb() 불투명도 수정자와 호환
+   완성형 색상값: text hierarchy 등 수정자 불필요한 색상
+══════════════════════════════════════════════════════════ */
+
+/* ── Dark Mode (기본값) ─────────────────────────────────── */
 :root {
   color-scheme: dark;
+
+  /* 공간 */
+  --navi-bg:        3 6 23;      /* #030617 */
+  --navi-surface:   16 25 54;    /* #101936 */
+  --navi-surface2:  22 33 66;    /* #162142 */
+  --navi-surface3:  27 43 85;    /* #1B2B55 */
+  --navi-border:    27 40 71;    /* #1B2847 */
+  --navi-border2:   38 53 88;    /* #263558 */
+
+  /* 브랜드 */
+  --navi-accent:        45 65 152;   /* #2D4198 */
+  --navi-accent-hover:  61 84 191;   /* #3D54BF */
+
+  /* 행동 */
+  --navi-action:        91 127 255;  /* #5B7FFF */
+  --navi-action-hover:  74 110 240;  /* #4A6EF0 */
+
+  /* 시맨틱 */
+  --navi-success:   50 209 122;   /* #32D17A */
+  --navi-info:      79 209 255;   /* #4FD1FF */
+  --navi-warning:   255 184 77;   /* #FFB84D */
+  --navi-danger:    255 107 107;  /* #FF6B6B */
+
+  /* 텍스트 (완성형 — 수정자 불필요) */
+  --navi-text:      248 249 247;               /* #F8F9F7 */
+  --navi-secondary: rgba(248, 249, 247, 0.72);
+  --navi-muted:     rgba(248, 249, 247, 0.44);
+  --navi-disabled:  rgba(248, 249, 247, 0.24);
+
+  /* 캔들 */
+  --navi-bullish: 38 166 154;   /* #26a69a teal */
+  --navi-bearish: 239 83 80;    /* #ef5350 red  */
+
+  /* 차트 전용 (lightweight-charts에 직접 사용) */
+  --chart-bg:    #101936;
+  --chart-grid:  #1B2847;
+  --chart-text:  rgba(248, 249, 247, 0.55);
+  --chart-border: #1B2847;
+  --candle-up:   #26a69a;
+  --candle-down: #ef5350;
 }
 
-/* ── Base ─────────────────────────────────────────── */
+/* ── Light Mode ─────────────────────────────────────────── */
+html.light {
+  color-scheme: light;
+
+  /* 공간 */
+  --navi-bg:        245 247 251;  /* #F5F7FB */
+  --navi-surface:   255 255 255;  /* #FFFFFF */
+  --navi-surface2:  240 244 250;  /* #F0F4FA */
+  --navi-surface3:  232 238 248;  /* #E8EEF8 */
+  --navi-border:    220 227 244;  /* #DCE3F4 */
+  --navi-border2:   200 211 236;  /* #C8D3EC */
+
+  /* 브랜드 */
+  --navi-accent:        45 65 152;   /* #2D4198 (유지) */
+  --navi-accent-hover:  29 48 128;   /* #1D3080 */
+
+  /* 행동 — Light에서는 Accent와 동일 */
+  --navi-action:        45 65 152;   /* #2D4198 */
+  --navi-action-hover:  29 48 128;   /* #1D3080 */
+
+  /* 시맨틱 */
+  --navi-success:   15 157 117;   /* #0F9D75 */
+  --navi-info:      45 65 152;    /* #2D4198 */
+  --navi-warning:   245 158 11;   /* #F59E0B */
+  --navi-danger:    220 79 97;    /* #DC4F61 */
+
+  /* 텍스트 — 2단계만 사용 */
+  --navi-text:      14 23 45;     /* #0E172D */
+  --navi-secondary: #5E6B85;
+  --navi-muted:     #5E6B85;      /* Light에서는 muted = secondary */
+  --navi-disabled:  rgba(14, 23, 45, 0.30);
+
+  /* 캔들 — NAVI 브랜드 블루 / 레드 */
+  --navi-bullish: 45 65 152;    /* #2D4198 brand blue */
+  --navi-bearish: 224 99 99;    /* #E06363 */
+
+  /* 차트 전용 */
+  --chart-bg:    #FFFFFF;
+  --chart-grid:  #E5EAF5;
+  --chart-text:  #5E6B85;
+  --chart-border: #E5EAF5;
+  --candle-up:   #2D4198;
+  --candle-down: #E06363;
+}
+
+/* ══════════════════════════════════════════════════════════
+   Base
+══════════════════════════════════════════════════════════ */
 body {
-  background-color: #030617;
-  color: #F8F9F7;
+  background-color: rgb(var(--navi-bg));
+  color: rgb(var(--navi-text));
   font-family: 'Inter', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* ── Scrollbar ────────────────────────────────────── */
+/* ── Scrollbar ────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #030617; }
-::-webkit-scrollbar-thumb { background: #1B2847; border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: #263558; }
+::-webkit-scrollbar-track { background: rgb(var(--navi-bg)); }
+::-webkit-scrollbar-thumb { background: rgb(var(--navi-border)); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--navi-border2)); }
 
-/* ── Typography hierarchy ─────────────────────────── */
-.text-primary   { color: #F8F9F7; }
-.text-secondary { color: rgba(248,249,247,0.75); }
-.text-tertiary  { color: rgba(248,249,247,0.45); }
+/* ── Typography hierarchy ─────────────────────────────────── */
+.text-primary   { color: rgb(var(--navi-text)); }
+.text-secondary { color: var(--navi-secondary); }
+.text-tertiary  { color: var(--navi-muted); }
 
-/* ── Utilities ────────────────────────────────────── */
+/* ── Quiet text utilities (inline style 대체) ─────────────── */
+.text-quiet-60  { color: rgb(var(--navi-text) / 0.60); }
+.text-quiet-45  { color: rgb(var(--navi-text) / 0.45); }
+.text-quiet-35  { color: rgb(var(--navi-text) / 0.35); }
+
+/* ── Utilities ────────────────────────────────────────────── */
 .tabular       { font-variant-numeric: tabular-nums; }
 .tracking-caps { letter-spacing: 0.06em; text-transform: uppercase; }
 
-/* ── NAVI Card (명확한 계층 구조) ────────────────── */
+/* ── NAVI Card ────────────────────────────────────────────── */
 .navi-card {
-  background-color: #101936;
-  border: 1px solid #1B2847;
+  background-color: rgb(var(--navi-surface));
+  border: 1px solid rgb(var(--navi-border));
   border-radius: 12px;
-  transition: border-color 150ms ease;
+  transition: border-color 150ms ease, background-color 0.2s ease;
 }
 .navi-card:hover {
-  border-color: rgba(45,65,152,0.4);
+  border-color: rgb(var(--navi-accent) / 0.40);
 }
 .navi-card-active {
-  background-color: #162142;
-  border-color: #2D4198;
+  background-color: rgb(var(--navi-surface2));
+  border-color: rgb(var(--navi-accent));
 }
 
-/* ── Dividers ─────────────────────────────────────── */
-.navi-divider-h {
-  height: 1px;
-  background: #1B2847;
-}
-.navi-divider-v {
-  width: 1px;
-  background: #1B2847;
-}
+/* ── Dividers ─────────────────────────────────────────────── */
+.navi-divider-h { height: 1px; background: rgb(var(--navi-border)); }
+.navi-divider-v { width: 1px;  background: rgb(var(--navi-border)); }
 
-/* ── 30° Background Grid (로고 DNA 각도) ─────────── */
+/* ── 30° Background Grid ──────────────────────────────────── */
 .navi-grid-bg {
   background-image: repeating-linear-gradient(
     30deg,
-    rgba(45, 65, 152, 0.035) 0px,
-    rgba(45, 65, 152, 0.035) 1px,
+    rgb(var(--navi-accent) / 0.035) 0px,
+    rgb(var(--navi-accent) / 0.035) 1px,
     transparent 1px,
     transparent 64px
   );
 }
 
-/* ── 튜토리얼 강조 박스 ──────────────────────────── */
+/* ── Mission Box ──────────────────────────────────────────── */
 .navi-mission-box {
-  background: rgba(45,65,152,0.08);
-  border: 1px solid rgba(45,65,152,0.22);
+  background: rgb(var(--navi-accent) / 0.08);
+  border: 1px solid rgb(var(--navi-accent) / 0.22);
   border-radius: 10px;
   padding: 10px 12px;
 }
 
-/* ── Accent glow (CTA 버튼) ──────────────────────── */
+/* ── Accent Glow ──────────────────────────────────────────── */
 .navi-glow {
-  box-shadow: 0 0 0 0 rgba(45,65,152,0);
+  box-shadow: 0 0 0 0 rgb(var(--navi-accent) / 0);
   transition: box-shadow 150ms ease;
 }
 .navi-glow:hover {
-  box-shadow: 0 4px 24px rgba(45,65,152,0.35);
+  box-shadow: 0 4px 24px rgb(var(--navi-accent) / 0.35);
+}
+
+/* ── Light Mode 차트 컨테이너 보더 ───────────────────────── */
+html.light .chart-container-border {
+  border-color: rgb(var(--navi-border));
 }

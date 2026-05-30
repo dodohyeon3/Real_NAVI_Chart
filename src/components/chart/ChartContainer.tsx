@@ -14,6 +14,8 @@ import { useChartStore }    from '@/stores/chartStore'
 import { useTutorialStore } from '@/stores/tutorialStore'
 import { calcBollingerBands, calcMA } from '@/lib/indicators'
 import { chartSync } from '@/lib/chartSync'
+import { useTheme }  from '@/hooks/useTheme'
+import { getChartColors } from '@/lib/chartColors'
 
 type LineSeries = ISeriesApi<'Line'>
 
@@ -28,14 +30,6 @@ const FIB_LEVELS = [
 ]
 
 const CHART_HEIGHT = 440
-
-/* ─── 이동평균선 범례 ─────────────────────────────────────── */
-const MA_LEGEND = [
-  { period: 5,   color: '#facc15', label: 'MA5' },
-  { period: 20,  color: '#f97316', label: 'MA20' },
-  { period: 60,  color: '#a78bfa', label: 'MA60' },
-  { period: 120, color: '#f43f5e', label: 'MA120' },
-]
 
 export function ChartContainer() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -68,6 +62,7 @@ export function ChartContainer() {
   } = useChartStore()
 
   const { focusBarsFromEnd, currentStep } = useTutorialStore()
+  const { isDark } = useTheme()
 
   // ref를 항상 최신 상태로 유지
   useEffect(() => { drawingToolRef.current = drawingTool }, [drawingTool])
@@ -162,31 +157,32 @@ export function ChartContainer() {
   useEffect(() => {
     if (!containerRef.current) return
 
+    const cc = getChartColors(isDark)
     const chart = createChart(containerRef.current, {
       layout: {
-        background: { type: ColorType.Solid, color: '#101936' },
-        textColor: 'rgba(248,249,247,0.55)',
+        background: { type: ColorType.Solid, color: cc.bg },
+        textColor: cc.text,
       },
       grid: {
-        vertLines: { color: '#1B2847' },
-        horzLines: { color: '#1B2847' },
+        vertLines: { color: cc.grid },
+        horzLines: { color: cc.grid },
       },
       crosshair: { mode: CrosshairMode.Normal },
-      rightPriceScale: { borderColor: '#1B2847' },
+      rightPriceScale: { borderColor: cc.border },
       timeScale: {
-        borderColor: '#1B2847',
+        borderColor: cc.border,
         timeVisible: true,
-        fixLeftEdge: true,   // 데이터 시작 이전으로 스크롤 방지
-        fixRightEdge: true,  // 데이터 끝 이후로 스크롤 방지 → RSI/MACD 선 연장 현상 해소
+        fixLeftEdge: true,
+        fixRightEdge: true,
       },
       width: containerRef.current.clientWidth,
       height: CHART_HEIGHT,
     })
 
     const series = chart.addCandlestickSeries({
-      upColor: '#26a69a', downColor: '#ef5350',
-      borderUpColor: '#26a69a', borderDownColor: '#ef5350',
-      wickUpColor: '#26a69a', wickDownColor: '#ef5350',
+      upColor: cc.candleUp, downColor: cc.candleDown,
+      borderUpColor: cc.candleUp, borderDownColor: cc.candleDown,
+      wickUpColor: cc.candleUp, wickDownColor: cc.candleDown,
     })
 
     chartRef.current  = chart
@@ -267,11 +263,12 @@ export function ChartContainer() {
     if (activeIndicators.has('bollinger')) {
       const { upper, middle, lower } = calcBollingerBands(candleData)
       if (!bbRef.current) {
+        const cc2 = getChartColors(isDark)
         const mk = (color: string, dash = false) => chart.addLineSeries({
           color, lineWidth: 1, lineStyle: dash ? 2 : 0,
           lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false,
         })
-        bbRef.current = { upper: mk('#60a5fa'), middle: mk('#8892AA', true), lower: mk('#60a5fa') }
+        bbRef.current = { upper: mk(cc2.bbBand), middle: mk(cc2.bbMid, true), lower: mk(cc2.bbBand) }
       }
       bbRef.current.upper.setData(upper as any)
       bbRef.current.middle.setData(middle as any)
@@ -290,13 +287,14 @@ export function ChartContainer() {
       const ma60d  = calcMA(candleData, 60)
       const ma120d = calcMA(candleData, 120)
       if (!maRef.current) {
+        const cc2 = getChartColors(isDark)
         const mkMA = (color: string) =>
           chart.addLineSeries({ color, lineWidth: 1, lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false })
         maRef.current = {
-          ma5:   mkMA('#facc15'),  // 노랑  — 단기
-          ma20:  mkMA('#f97316'),  // 주황  — 단기~중기
-          ma60:  mkMA('#a78bfa'),  // 보라  — 중기
-          ma120: mkMA('#f43f5e'),  // 빨강  — 장기
+          ma5:   mkMA(cc2.ma5),
+          ma20:  mkMA(cc2.ma20),
+          ma60:  mkMA(cc2.ma60),
+          ma120: mkMA(cc2.ma120),
         }
       }
       maRef.current.ma5.setData(ma5d     as any)
@@ -321,6 +319,43 @@ export function ChartContainer() {
       to:   n + 3,
     })
   }, [focusBarsFromEnd, candleData.length])
+
+  // ── 테마 변경 → 차트 색상 업데이트 (재생성 없이 applyOptions) ─
+  useEffect(() => {
+    const chart  = chartRef.current
+    const candle = candleRef.current
+    if (!chart || !candle) return
+    const cc = getChartColors(isDark)
+
+    chart.applyOptions({
+      layout: {
+        background: { type: ColorType.Solid, color: cc.bg },
+        textColor: cc.text,
+      },
+      grid: {
+        vertLines: { color: cc.grid },
+        horzLines: { color: cc.grid },
+      },
+      rightPriceScale: { borderColor: cc.border },
+      timeScale: { borderColor: cc.border },
+    })
+    candle.applyOptions({
+      upColor:        cc.candleUp,  downColor:        cc.candleDown,
+      borderUpColor:  cc.candleUp,  borderDownColor:  cc.candleDown,
+      wickUpColor:    cc.candleUp,  wickDownColor:    cc.candleDown,
+    })
+    if (maRef.current) {
+      maRef.current.ma5.applyOptions({ color: cc.ma5 })
+      maRef.current.ma20.applyOptions({ color: cc.ma20 })
+      maRef.current.ma60.applyOptions({ color: cc.ma60 })
+      maRef.current.ma120.applyOptions({ color: cc.ma120 })
+    }
+    if (bbRef.current) {
+      bbRef.current.upper.applyOptions({ color: cc.bbBand })
+      bbRef.current.middle.applyOptions({ color: cc.bbMid })
+      bbRef.current.lower.applyOptions({ color: cc.bbBand })
+    }
+  }, [isDark])
 
   // ── 튜토리얼 단계 변경 → 피보나치 가이드 마커 업데이트 ──
   useEffect(() => {
@@ -527,19 +562,28 @@ export function ChartContainer() {
       />
 
       {/* 이동평균선 범례 — 켜진 경우만 표시 */}
-      {activeIndicators.has('moving-average') && (
-        <div
-          className="absolute pointer-events-none select-none flex flex-col gap-1"
-          style={{ top: 10, left: 10, zIndex: 10 }}
-        >
-          {MA_LEGEND.map(({ label, color }) => (
-            <div key={label} className="flex items-center gap-1.5">
-              <div style={{ width: 14, height: 2, backgroundColor: color, borderRadius: 1 }} />
-              <span style={{ color, fontSize: 10, fontWeight: 700, lineHeight: 1 }}>{label}</span>
-            </div>
-          ))}
-        </div>
-      )}
+      {activeIndicators.has('moving-average') && (() => {
+        const cc2 = getChartColors(isDark)
+        const legend = [
+          { label: 'MA5',   color: cc2.ma5   },
+          { label: 'MA20',  color: cc2.ma20  },
+          { label: 'MA60',  color: cc2.ma60  },
+          { label: 'MA120', color: cc2.ma120 },
+        ]
+        return (
+          <div
+            className="absolute pointer-events-none select-none flex flex-col gap-1"
+            style={{ top: 10, left: 10, zIndex: 10 }}
+          >
+            {legend.map(({ label, color }) => (
+              <div key={label} className="flex items-center gap-1.5">
+                <div style={{ width: 14, height: 2, backgroundColor: color, borderRadius: 1 }} />
+                <span style={{ color, fontSize: 10, fontWeight: 700, lineHeight: 1 }}>{label}</span>
+              </div>
+            ))}
+          </div>
+        )
+      })()}
 
       {/* 피보나치 레이블 HTML 오버레이 — priceToCoordinate 기반 y좌표, canvas보다 안정적 */}
       {fibLabels.map((lv, i) => (

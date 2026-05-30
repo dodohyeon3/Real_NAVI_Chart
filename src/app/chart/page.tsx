@@ -12,6 +12,7 @@ import { TutorialManager }    from '@/components/tutorial/TutorialManager'
 import { TutorialMenuButton } from '@/components/tutorial/TutorialMenuButton'
 import { IndicatorToast }     from '@/components/ui/IndicatorToast'
 import { NaviSymbol }         from '@/components/ui/NaviSymbol'
+import { ThemeToggle }        from '@/components/ui/ThemeToggle'
 import { useTutorialStore }   from '@/stores/tutorialStore'
 import { useChartStore } from '@/stores/chartStore'
 import { useLearnStore } from '@/stores/learnStore'
@@ -114,6 +115,8 @@ function ChartPageInner() {
             </Link>
             {/* 학습 메뉴 버튼 */}
             <TutorialMenuButton />
+            {/* 테마 전환 */}
+            <ThemeToggle />
           </div>
         </div>
       </header>

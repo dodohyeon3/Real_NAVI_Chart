@@ -50,7 +50,7 @@ export default function LandingPage() {
         <img
           src="/navi-logo.svg"
           alt="NAVI Chart"
-          className="w-60 h-auto select-none"
+          className="w-80 h-auto select-none"
           draggable={false}
         />
       </div>
@@ -59,11 +59,10 @@ export default function LandingPage() {
       <div className="text-center mb-8 relative z-10">
         <h1 className="text-[26px] sm:text-[30px] font-black tracking-[-0.025em]
                        leading-[1.22] max-w-sm mx-auto mb-3">
-          <span style={{ color: 'rgba(248,249,247,0.75)' }}>"RSI를 배웠다"</span>가 아닌<br />
+          <span className="text-quiet-60">"RSI를 배웠다"</span>가 아닌<br />
           <span className="text-navi-text">"차트를 분석할 수 있다"</span>
         </h1>
-        <p className="text-[13px] leading-relaxed max-w-xs mx-auto"
-           style={{ color: 'rgba(248,249,247,0.6)' }}>
+        <p className="text-[13px] leading-relaxed max-w-xs mx-auto text-quiet-60">
           직접 클릭하고, 판단하고, 틀리면서<br />
           차트 분석 능력이 자연스럽게 생겨요.
         </p>
@@ -91,8 +90,7 @@ export default function LandingPage() {
         </Link>
 
         {/* 버튼 보조 정보 */}
-        <div className="flex items-center justify-center gap-2 text-[11px]"
-             style={{ color: 'rgba(248,249,247,0.4)' }}>
+        <div className="flex items-center justify-center gap-2 text-[11px] text-quiet-45">
           <span>약 7~10분</span>
           <span
             className="w-1 h-1 bg-navi-border2 shrink-0 inline-block"
