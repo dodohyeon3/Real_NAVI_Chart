@@ -143,7 +143,7 @@ export default function IndicatorDetailPage({ params }: Props) {
         {/* ── 실전 팁 ── */}
         {indicator.tips && indicator.tips.length > 0 && (
           <RoundedCard>
-            <SectionLabel>💡 실전 팁</SectionLabel>
+            <SectionLabel>실전 팁</SectionLabel>
             <ul className="space-y-3">
               {indicator.tips.map((tip, i) => (
                 <li key={i} className="flex gap-3 text-[13px] leading-relaxed">
@@ -160,7 +160,7 @@ export default function IndicatorDetailPage({ params }: Props) {
         {indicator.caution && (
           <div className="rounded-2xl border border-navi-danger/25 bg-navi-danger/[0.08] px-5 py-4">
             <p className="text-[10px] font-bold text-navi-text uppercase tracking-[0.12em] mb-3">
-              ⚠ 주의할 점
+              주의할 점
             </p>
             <p className="text-[13px] text-navi-secondary leading-[1.9] tracking-wide">
               {indicator.caution}

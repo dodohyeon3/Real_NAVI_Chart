@@ -73,13 +73,13 @@ function analyzeSignals(data: CandleData[], activeInds: Set<string>): Signal[] {
       const currAbove = last20 > last60
       const prevAbove = prev20 > prev60
       if (!prevAbove && currAbove) {
-        signals.push({ name: 'MA', icon: '📊', type: 'bullish', label: '골든 크로스 발생', detail: 'MA20이 MA60을 위로 돌파 → 상승 전환 신호였어요' })
+        signals.push({ name: 'MA', icon: 'MA', type: 'bullish', label: '골든 크로스 발생', detail: 'MA20이 MA60을 위로 돌파 → 상승 전환 신호였어요' })
       } else if (prevAbove && !currAbove) {
-        signals.push({ name: 'MA', icon: '📊', type: 'bearish', label: '데드 크로스 발생', detail: 'MA20이 MA60 아래로 교차 → 하락 전환 신호였어요' })
+        signals.push({ name: 'MA', icon: 'MA', type: 'bearish', label: '데드 크로스 발생', detail: 'MA20이 MA60 아래로 교차 → 하락 전환 신호였어요' })
       } else if (currAbove) {
-        signals.push({ name: 'MA', icon: '📊', type: 'bullish', label: '상승 추세 유지', detail: `MA20($${last20.toFixed(0)})이 MA60($${last60.toFixed(0)}) 위 → 상승 흐름이었어요` })
+        signals.push({ name: 'MA', icon: 'MA', type: 'bullish', label: '상승 추세 유지', detail: `MA20($${last20.toFixed(0)})이 MA60($${last60.toFixed(0)}) 위 → 상승 흐름이었어요` })
       } else {
-        signals.push({ name: 'MA', icon: '📊', type: 'bearish', label: '하락 추세', detail: `MA20($${last20.toFixed(0)})이 MA60($${last60.toFixed(0)}) 아래 → 하락 흐름이었어요` })
+        signals.push({ name: 'MA', icon: 'MA', type: 'bearish', label: '하락 추세', detail: `MA20($${last20.toFixed(0)})이 MA60($${last60.toFixed(0)}) 아래 → 하락 흐름이었어요` })
       }
     }
   }
@@ -90,12 +90,12 @@ function analyzeSignals(data: CandleData[], activeInds: Set<string>): Signal[] {
     const lastRSI = rsiData[rsiData.length - 1]?.value
     if (lastRSI !== undefined) {
       if (lastRSI >= 70) {
-        signals.push({ name: 'RSI', icon: '🌡️', type: 'bearish', label: `${lastRSI.toFixed(0)} — 과매수`, detail: '70 이상 과열 상태 → 조정 가능성이 있었어요' })
+        signals.push({ name: 'RSI', icon: 'RSI', type: 'bearish', label: `${lastRSI.toFixed(0)} — 과매수`, detail: '70 이상 과열 상태 → 조정 가능성이 있었어요' })
       } else if (lastRSI <= 30) {
-        signals.push({ name: 'RSI', icon: '🌡️', type: 'bullish', label: `${lastRSI.toFixed(0)} — 과매도`, detail: '30 이하 침체 상태 → 반등 가능성이 있었어요' })
+        signals.push({ name: 'RSI', icon: 'RSI', type: 'bullish', label: `${lastRSI.toFixed(0)} — 과매도`, detail: '30 이하 침체 상태 → 반등 가능성이 있었어요' })
       } else {
         const sub = lastRSI > 50 ? '강세 기조' : '약세 기조'
-        signals.push({ name: 'RSI', icon: '🌡️', type: 'neutral', label: `${lastRSI.toFixed(0)} — 중립`, detail: `중립 구간 (${sub}) → 확실한 방향 신호가 없었어요` })
+        signals.push({ name: 'RSI', icon: 'RSI', type: 'neutral', label: `${lastRSI.toFixed(0)} — 중립`, detail: `중립 구간 (${sub}) → 확실한 방향 신호가 없었어요` })
       }
     }
   }
@@ -110,13 +110,13 @@ function analyzeSignals(data: CandleData[], activeInds: Set<string>): Signal[] {
       const cAbove = last.macd > (last.signal ?? 0)
       const pAbove = prev.macd > (prev.signal ?? 0)
       if (!pAbove && cAbove) {
-        signals.push({ name: 'MACD', icon: '🔄', type: 'bullish', label: '상향 교차 (매수 신호)', detail: 'MACD선이 시그널선을 위로 돌파 → 매수 신호가 발생했어요' })
+        signals.push({ name: 'MACD', icon: 'MACD', type: 'bullish', label: '상향 교차 (매수 신호)', detail: 'MACD선이 시그널선을 위로 돌파 → 매수 신호가 발생했어요' })
       } else if (pAbove && !cAbove) {
-        signals.push({ name: 'MACD', icon: '🔄', type: 'bearish', label: '하향 교차 (매도 신호)', detail: 'MACD선이 시그널선 아래로 교차 → 매도 신호가 발생했어요' })
+        signals.push({ name: 'MACD', icon: 'MACD', type: 'bearish', label: '하향 교차 (매도 신호)', detail: 'MACD선이 시그널선 아래로 교차 → 매도 신호가 발생했어요' })
       } else if (cAbove) {
-        signals.push({ name: 'MACD', icon: '🔄', type: 'bullish', label: '상승 모멘텀', detail: 'MACD선이 시그널선 위 → 상승 흐름이 유지되고 있었어요' })
+        signals.push({ name: 'MACD', icon: 'MACD', type: 'bullish', label: '상승 모멘텀', detail: 'MACD선이 시그널선 위 → 상승 흐름이 유지되고 있었어요' })
       } else {
-        signals.push({ name: 'MACD', icon: '🔄', type: 'bearish', label: '하락 모멘텀', detail: 'MACD선이 시그널선 아래 → 하락 압력이 있었어요' })
+        signals.push({ name: 'MACD', icon: 'MACD', type: 'bearish', label: '하락 모멘텀', detail: 'MACD선이 시그널선 아래 → 하락 압력이 있었어요' })
       }
     }
   }
@@ -131,13 +131,13 @@ function analyzeSignals(data: CandleData[], activeInds: Set<string>): Signal[] {
       const range = upper - lower
       const bwPct = middle > 0 ? (range / middle) * 100 : 0
       if (lastClose > upper) {
-        signals.push({ name: 'BB', icon: '〰️', type: 'bearish', label: '상단 밴드 돌파', detail: `가격($${lastClose.toFixed(0)})이 상단 밴드($${upper.toFixed(0)}) 위 → 과매수 가능성이 있었어요` })
+        signals.push({ name: 'BB', icon: 'BB', type: 'bearish', label: '상단 밴드 돌파', detail: `가격($${lastClose.toFixed(0)})이 상단 밴드($${upper.toFixed(0)}) 위 → 과매수 가능성이 있었어요` })
       } else if (lastClose < lower) {
-        signals.push({ name: 'BB', icon: '〰️', type: 'bullish', label: '하단 밴드 이탈', detail: `가격($${lastClose.toFixed(0)})이 하단 밴드($${lower.toFixed(0)}) 아래 → 과매도 가능성이 있었어요` })
+        signals.push({ name: 'BB', icon: 'BB', type: 'bullish', label: '하단 밴드 이탈', detail: `가격($${lastClose.toFixed(0)})이 하단 밴드($${lower.toFixed(0)}) 아래 → 과매도 가능성이 있었어요` })
       } else {
         const pos = Math.round(((lastClose - lower) / range) * 100)
         const bwDesc = bwPct < 4 ? '매우 좁음 — 큰 움직임 예고' : bwPct < 8 ? '보통' : '넓음'
-        signals.push({ name: 'BB', icon: '〰️', type: 'neutral', label: `밴드 ${pos}% 위치 (폭: ${bwDesc})`, detail: bwPct < 4 ? '밴드가 매우 좁아졌어요 → 곧 큰 변동이 올 수 있었어요' : `밴드 내 ${pos}% 위치에서 마감했어요` })
+        signals.push({ name: 'BB', icon: 'BB', type: 'neutral', label: `밴드 ${pos}% 위치 (폭: ${bwDesc})`, detail: bwPct < 4 ? '밴드가 매우 좁아졌어요 → 곧 큰 변동이 올 수 있었어요' : `밴드 내 ${pos}% 위치에서 마감했어요` })
       }
     }
   }
@@ -663,14 +663,14 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
       {/* ── 기간 배지 ─────────────────────────────────────────── */}
       <div className="flex flex-wrap items-center gap-2 text-xs">
         <span className="bg-navi-surface border border-navi-border rounded-lg px-2.5 py-1 text-navi-muted">
-          📅 분석 구간: <span className="text-navi-text font-medium">{periodLabel}</span>
+          분석 구간: <span className="text-navi-text font-medium">{periodLabel}</span>
         </span>
         {phase !== 'revealed'
           ? <span className="bg-amber-500/[0.08] border border-amber-500/28 rounded-lg px-2.5 py-1 text-navi-text animate-pulse">
-              🔒 앞으로 {futureData.length}일이 숨겨져 있어요
+              앞으로 {futureData.length}일 숨김
             </span>
           : <span className="bg-amber-500/[0.08] border border-amber-500/28 rounded-lg px-2.5 py-1 text-navi-text">
-              🔓 공개 구간: {futurePeriodLabel}
+              공개 구간: {futurePeriodLabel}
             </span>
         }
       </div>
@@ -745,8 +745,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
           <div className="mt-2 rounded-xl border border-amber-500/28 bg-amber-500/[0.06] overflow-hidden">
             {drawStep === 0 && (
               <div className="flex items-center gap-2 px-3 py-2 bg-amber-500/[0.08] border-b border-amber-500/20">
-                <span className="text-sm">⬆️</span>
-                <p className="text-[11px] font-semibold text-navi-text">위 차트에서 직접 클릭하세요</p>
+                <p className="text-[12px] font-semibold text-navi-text">위 차트에서 직접 클릭하세요</p>
                 <button
                   onClick={() => { pendingRef.current = null; setDrawStep(0); setTool('none'); redrawCanvas() }}
                   className="ml-auto text-[11px] text-navi-muted hover:text-navi-text transition-colors"
@@ -832,9 +831,8 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
       {phase === 'analyzing' && (
         <div className="space-y-2">
           {activeInds.size === 0 && (
-            <div className="flex items-start gap-2 px-4 py-3 rounded-xl bg-navi-surface border border-navi-border2 text-xs text-navi-secondary">
-              <span>💡</span>
-              <span>분석 도구를 하나 이상 켜보세요 — MA, RSI, MACD 중 하나를 활성화하면 더 근거 있는 예측을 할 수 있어요.</span>
+            <div className="px-4 py-3 rounded-xl bg-navi-surface border border-navi-border2 text-[12px] text-navi-secondary">
+              분석 도구를 하나 이상 켜보세요 — MA, RSI, MACD 중 하나를 활성화하면 더 근거 있는 예측을 할 수 있어요.
             </div>
           )}
           <button
@@ -844,7 +842,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
                        hover:bg-navi-action-hover
                        transition-all active:scale-[0.98]"
           >
-            ✅ 분석 완료 — 이제 예측해볼게요
+            분석 완료 — 이제 예측해볼게요
           </button>
         </div>
       )}
@@ -853,33 +851,30 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
       {phase === 'predicting' && (
         <div className="bg-navi-surface border border-navi-border rounded-xl p-5 space-y-4">
           <div>
-            <p className="text-sm font-bold text-navi-text mb-1">
-              📊 이 시점 이후 {futureData.length}일, 주가는?
+            <p className="text-[14px] font-bold text-navi-text mb-1">
+              이 시점 이후 {futureData.length}일, 주가는?
             </p>
-            <p className="text-xs text-navi-muted">지금까지 분석한 내용을 바탕으로 예측해봐요. 틀려도 괜찮아요!</p>
+            <p className="text-[12px] text-navi-muted">지금까지 분석한 내용을 바탕으로 예측해봐요. 틀려도 괜찮아요!</p>
           </div>
 
           <div className="grid grid-cols-3 gap-2">
             {([
-              { choice: 'up'       as Choice, icon: '📈', label: '상승',  desc: '+5% 초과',
-                cls: 'border-emerald-500/30 hover:border-emerald-500/70 hover:bg-emerald-500/10 hover:text-emerald-300' },
-              { choice: 'sideways' as Choice, icon: '➡️', label: '횡보',  desc: '±5% 이내',
-                cls: 'border-amber-500/30   hover:border-amber-500/70   hover:bg-amber-500/10   hover:text-amber-300'   },
-              { choice: 'down'     as Choice, icon: '📉', label: '하락',  desc: '-5% 초과',
-                cls: 'border-red-500/30     hover:border-red-500/70     hover:bg-red-500/10     hover:text-red-300'     },
-            ]).map(({ choice, icon, label, desc, cls }) => (
+              { choice: 'up'       as Choice, icon: '↑', label: '상승', desc: '+5% 초과' },
+              { choice: 'sideways' as Choice, icon: '→', label: '횡보', desc: '±5% 이내' },
+              { choice: 'down'     as Choice, icon: '↓', label: '하락', desc: '-5% 초과' },
+            ]).map(({ choice, icon, label, desc }) => (
               <button
                 key={choice}
                 onClick={() => handleConfirmPrediction(choice)}
                 className={clsx(
-                  'flex flex-col items-center gap-1.5 py-4 rounded-xl border-2 transition-all',
-                  'text-navi-muted active:scale-95',
-                  cls
+                  'flex flex-col items-center gap-1.5 py-4 rounded-xl border-2 transition-all active:scale-95',
+                  'border-navi-border2 text-navi-muted',
+                  'hover:border-navi-action/50 hover:bg-navi-action/[0.06] hover:text-navi-text'
                 )}
               >
-                <span className="text-2xl">{icon}</span>
-                <span className="text-sm font-bold">{label}</span>
-                <span className="text-[10px] opacity-60">{desc}</span>
+                <span className="text-[22px] font-bold leading-none text-navi-text">{icon}</span>
+                <span className="text-[13px] font-bold text-navi-text">{label}</span>
+                <span className="text-[10px] text-navi-muted">{desc}</span>
               </button>
             ))}
           </div>
@@ -903,24 +898,29 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
             result.change >= 0 ? 'bg-navi-surface border border-navi-border2' : 'bg-navi-surface border border-navi-border2'
           )}>
             <p className="text-xs text-navi-muted mb-2">{futurePeriodLabel} · 실제 결과 ({result.days}거래일)</p>
-            <div className="flex items-end gap-4">
-              <div>
-                <p className={clsx('text-3xl font-black', result.change >= 0 ? 'text-navi-green' : 'text-navi-red')}>
+            <div className="flex items-start gap-4">
+              {/* 실제 변동 — surface/border로 상태 표현 */}
+              <div className={clsx(
+                'flex-1 px-3 py-2.5 rounded-xl border',
+                result.change >= 0
+                  ? 'bg-navi-success/[0.08] border-navi-success/25'
+                  : 'bg-navi-danger/[0.08] border-navi-danger/25'
+              )}>
+                <p className="text-[28px] font-black text-navi-text leading-none">
                   {result.change >= 0 ? '+' : ''}{result.change.toFixed(1)}%
                 </p>
-                <p className="text-xs text-navi-muted mt-0.5">
+                <p className="text-[11px] text-navi-muted mt-1">
                   ${result.startPrice.toFixed(2)} → ${result.endPrice.toFixed(2)}
                 </p>
               </div>
-              <p className="text-2xl mb-1">{result.change >= 0 ? '📈' : '📉'}</p>
 
               {/* 예측 적중 여부 */}
-              <div className="ml-auto text-right">
-                <p className="text-sm font-bold text-navi-text">
-                  {isCorrect(prediction, result.change) ? '🎯 예측 성공!' : '📚 이번엔 달랐어요'}
+              <div className="text-right shrink-0">
+                <p className="text-[13px] font-bold text-navi-text">
+                  {isCorrect(prediction, result.change) ? '예측 성공' : '이번엔 달랐어요'}
                 </p>
                 <p className="text-[11px] text-navi-muted mt-0.5">
-                  내 예측: {prediction === 'up' ? '📈 상승' : prediction === 'down' ? '📉 하락' : '➡️ 횡보'}
+                  내 예측: {prediction === 'up' ? '↑ 상승' : prediction === 'down' ? '↓ 하락' : '→ 횡보'}
                 </p>
               </div>
             </div>
@@ -928,8 +928,8 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
 
           {/* 디브리핑 카드 */}
           <div className="bg-navi-surface border border-navi-border rounded-xl p-4">
-            <p className="text-xs font-bold text-navi-muted mb-3">
-              🔍 예측 시점, 지표들은 이렇게 말하고 있었어요
+            <p className="text-[11px] font-bold text-navi-muted mb-3 uppercase tracking-[0.07em]">
+              예측 시점, 지표들은 이렇게 말하고 있었어요
             </p>
 
             {debriefSignals.length === 0 ? (
@@ -948,7 +948,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
                       sig.type === 'bearish' ? 'bg-navi-danger/[0.10] border border-navi-danger/25 text-navi-text' :
                       'bg-navi-surface2 border border-navi-border2 text-navi-secondary'
                     )}>
-                      {sig.icon} {sig.name}
+                      {sig.name}
                     </span>
                     <div className="flex-1 min-w-0">
                       <p className="text-[12px] font-semibold text-navi-text leading-snug">{sig.label}</p>
@@ -958,8 +958,8 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
                 ))}
 
                 <div className="mt-2 pt-2 border-t border-navi-border">
-                  <p className="text-[11px] text-navi-muted leading-relaxed">
-                    💡 지표는 힌트일 뿐이에요. 여러 신호가 같은 방향을 가리킬수록 신뢰도가 올라가요.
+                  <p className="text-[12px] text-navi-muted leading-relaxed">
+                    지표는 힌트일 뿐이에요. 여러 신호가 같은 방향을 가리킬수록 신뢰도가 올라가요.
                     틀렸다면 어느 신호를 놓쳤는지 확인해봐요!
                   </p>
                 </div>
@@ -973,7 +973,7 @@ export function SimulateChart({ pastData, futureData, onRetry }: Props) {
               onClick={() => { revRef.current = false; onRetry() }}
               className="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-navi-action text-white hover:bg-navi-action-hover transition-colors"
             >
-              🔄 다른 구간 도전
+              다른 구간 도전
             </button>
           </div>
         </div>

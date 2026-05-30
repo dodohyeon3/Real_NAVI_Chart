@@ -3,118 +3,44 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 
-/* ── 15단계 여정 미리보기 ──────────────────────────────────── */
-interface JourneyItem {
-  icon: string; label: string; desc: string; badge: string; highlight?: boolean
-}
-
-const JOURNEY: JourneyItem[] = [
+/* ── 4단계 학습 여정 (이모지 없음, 명확한 구조) ─────────── */
+const PHASES = [
   {
-    icon: '📊', label: '캔들 클릭',
-    desc: '하루치 OHLC 데이터 직접 확인',
-    badge: '직접 클릭',
+    phase: '01',
+    label: '차트 기초',
+    steps: '캔들 클릭  ·  추세선 직접 그리기',
+    detail: '하루치 OHLC 데이터를 손으로 확인하고, 방향 감각을 눈으로 익혀요.',
+    highlight: false,
   },
   {
-    icon: '↗', label: '추세선 먼저 그리기',
-    desc: '지표 없이 방향 감각 훈련',
-    badge: '직접 그려요',
+    phase: '02',
+    label: '분석 도구 탐구',
+    steps: '이동평균선  ·  RSI  ·  MACD  ·  볼린저 밴드',
+    detail: '지표를 켜고 끄며 실제 차트에서 각각 어떻게 읽는지 배워요.',
+    highlight: false,
   },
   {
-    icon: '📈', label: '이동평균선(MA)',
-    desc: '방향을 선으로 확인 — 직접 켜봐요',
-    badge: '토글',
-  },
-  {
-    icon: '🤔', label: 'MA 추세 판단',
-    desc: '실제 차트 보고 방향 스스로 판단',
-    badge: '판단',
-  },
-  {
-    icon: '🌡️', label: 'RSI',
-    desc: '과열·과냉 구간 직접 읽기',
-    badge: '토글',
-  },
-  {
-    icon: '🔍', label: 'RSI 판단',
-    desc: '현재 RSI 위치 파악',
-    badge: '판단',
-  },
-  {
-    icon: '🔄', label: 'MACD',
-    desc: '추세 전환 신호 포착',
-    badge: '토글',
-  },
-  {
-    icon: '📡', label: 'MACD 판단',
-    desc: '파란선·주황선 위치 분석',
-    badge: '판단',
-  },
-  {
-    icon: '〰️', label: '볼린저 밴드(BB)',
-    desc: '변동성 폭 직접 관찰',
-    badge: '토글',
-  },
-  {
-    icon: '🔎', label: 'BB 판단',
-    desc: '밴드 스퀴즈 vs 확장 구별',
-    badge: '판단',
-  },
-  {
-    icon: '𝚽', label: '피보나치 되돌림',
-    desc: '지지/저항 구간 직접 표시',
-    badge: '직접 그려요',
-  },
-  {
-    icon: '📋', label: '종합 차트 읽기 테스트',
-    desc: 'MA·RSI·MACD 종합 4문항 자동 채점',
-    badge: '테스트',
+    phase: '03',
+    label: '종합 테스트',
+    steps: '4문항 자동 채점',
+    detail: '배운 지표 4가지를 동시에 켜고 현재 차트를 종합 분석해봐요.',
     highlight: true,
   },
   {
-    icon: '🎉', label: '튜토리얼 완료',
-    desc: '나는 차트를 읽을 수 있다',
-    badge: '축하',
-  },
-  {
-    icon: '🔮', label: '시뮬레이션 안내',
-    desc: '실제 데이터로 미래 예측 도전',
-    badge: '안내',
-  },
-  {
-    icon: '🚀', label: '첫 챌린지 시작',
-    desc: '예측 → 결과 확인 → 성장',
-    badge: '실전',
+    phase: '04',
+    label: '예측 시뮬레이션',
+    steps: '실제 NVDA 과거 데이터  ·  미래 30일 예측',
+    detail: '예측하고, 결과를 확인하고, 왜 틀렸는지 분석하며 성장해요.',
     highlight: true,
   },
 ]
-
-const CONTAINER = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.06 } },
-}
-const ITEM = {
-  hidden: { opacity: 0, y: 16 },
-  show:   { opacity: 1, y: 0, transition: { ease: [0.16, 1, 0.3, 1] } },
-}
-
-/* Surface 계층으로 배지 구분 — 텍스트 색 최소화 */
-const BADGE_COLORS: Record<string, string> = {
-  '직접 클릭':   'bg-navi-surface3 text-navi-text',
-  '직접 그려요': 'bg-navi-surface3 text-navi-text',
-  '토글':        'bg-navi-surface3 text-navi-text',
-  '판단':        'bg-navi-surface2 text-navi-secondary',
-  '테스트':      'bg-navi-surface3 text-navi-text',
-  '축하':        'bg-navi-surface2 text-navi-secondary',
-  '안내':        'bg-navi-surface2 text-navi-secondary',
-  '실전':        'bg-navi-surface3 text-navi-text',
-}
 
 export default function TutorialPage() {
   return (
     <main className="min-h-screen bg-navi-bg px-5 py-10 max-w-lg mx-auto flex flex-col">
 
       {/* 뒤로가기 */}
-      <Link href="/" className="text-navi-muted text-sm hover:text-navi-text mb-10 self-start">
+      <Link href="/" className="text-navi-muted text-[13px] hover:text-navi-text mb-12 self-start">
         ← 홈
       </Link>
 
@@ -122,85 +48,75 @@ export default function TutorialPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="mb-8"
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        className="mb-10"
       >
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full
-                        bg-navi-surface2 border border-navi-border2 mb-4">
-          <span className="w-1.5 h-1.5 rounded-full bg-navi-accent animate-pulse" />
-          <span className="text-[11px] font-semibold text-navi-text">
-            읽기만 하는 설명 NO — 직접 해보는 튜토리얼
-          </span>
-        </div>
-
-        <h1 className="text-2xl font-black text-navi-text leading-tight">
-          "RSI를 배웠다"가<br />
-          아니라<br />
-          <span className="text-navi-text">"차트를 읽을 수 있다"</span><br />
+        <h1 className="text-[28px] font-black text-navi-text leading-[1.2] mb-4">
+          "차트를 읽을 수 있다"<br />
           는 느낌
         </h1>
-        <p className="text-navi-muted text-sm mt-3 leading-relaxed">
-          버튼을 켜고, 선을 그어보고, 직접 판단하면서<br />
-          차트 읽기 능력이 쌓여요.
+        <p className="text-navi-secondary text-[15px] leading-relaxed mb-5">
+          설명을 읽는 게 아니라 직접 클릭하고, 판단하면서<br />
+          차트 읽기 능력이 자연스럽게 쌓여요.
         </p>
-
-        <div className="mt-4 flex items-center gap-3 text-xs text-navi-muted">
-          <span>⏱ 약 7~10분</span>
-          <span>·</span>
-          <span>🎯 15단계 실전 체험</span>
-          <span>·</span>
-          <span>✅ 틀려도 괜찮아요</span>
+        <div className="flex items-center gap-3 text-[13px] text-navi-muted">
+          <span>약 7~10분</span>
+          <span className="w-1 h-1 rounded-full bg-navi-border2 shrink-0" />
+          <span>15단계 실습</span>
+          <span className="w-1 h-1 rounded-full bg-navi-border2 shrink-0" />
+          <span>틀려도 괜찮아요</span>
         </div>
       </motion.div>
 
-      {/* 여정 리스트 */}
-      <motion.div
-        variants={CONTAINER}
-        initial="hidden"
-        animate="show"
-        className="space-y-1.5 mb-8"
-      >
-        {JOURNEY.map((step, i) => (
-          <motion.div
-            key={i}
-            variants={ITEM}
-            className={`flex items-center gap-4 rounded-2xl px-4 py-3 border transition-colors
-              ${step.highlight
-                ? 'bg-navi-surface2 border-navi-border2'
-                : 'bg-navi-surface border-navi-border'
-              }`}
-          >
-            <div className="flex items-center gap-2.5 shrink-0">
-              <span className="text-[10px] font-bold text-navi-muted w-4 text-right tabular-nums">
-                {i + 1}
-              </span>
-              <span className="text-lg">{step.icon}</span>
-            </div>
-
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold text-navi-text">{step.label}</p>
-              <p className="text-[11px] text-navi-muted mt-0.5">{step.desc}</p>
-            </div>
-
-            <span className={`shrink-0 text-[10px] px-2 py-0.5 rounded-full font-medium
-              ${BADGE_COLORS[step.badge] ?? 'bg-navi-border text-navi-muted'}`}>
-              {step.badge}
-            </span>
-          </motion.div>
-        ))}
-      </motion.div>
-
-      {/* 핵심 강조 */}
+      {/* 학습 단계 */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.9 }}
-        className="mb-8 px-4 py-3.5 rounded-2xl bg-navi-surface border border-navi-accent/20"
+        transition={{ delay: 0.15, duration: 0.45 }}
+        className="mb-10"
       >
-        <p className="text-xs text-navi-secondary leading-relaxed">
-          💡 <strong>어떤 버튼을 눌러도 데이터는 사라지지 않아요.</strong>{' '}
-          설명을 읽는 게 아니라 실제 차트 위에서 직접 클릭하고 판단하면서
-          차트 읽기 능력이 자연스럽게 생겨요.
+        <p className="text-[11px] font-semibold tracking-[0.1em] uppercase text-navi-muted mb-4">
+          학습 순서
+        </p>
+        <div className="space-y-2">
+          {PHASES.map((p) => (
+            <div
+              key={p.phase}
+              className={[
+                'flex items-start gap-5 px-4 py-4 rounded-2xl border',
+                p.highlight
+                  ? 'bg-navi-surface2 border-navi-border2'
+                  : 'bg-navi-surface border-navi-border',
+              ].join(' ')}
+            >
+              {/* 단계 번호 */}
+              <span className="text-[11px] font-bold text-navi-muted tabular-nums shrink-0 mt-0.5 w-5 text-right">
+                {p.phase}
+              </span>
+
+              {/* 내용 */}
+              <div>
+                <p className="text-[14px] font-bold text-navi-text leading-snug mb-1">
+                  {p.label}
+                </p>
+                <p className="text-[12px] text-navi-secondary mb-1.5">{p.steps}</p>
+                <p className="text-[12px] text-navi-muted leading-relaxed">{p.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* 안내 메시지 */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3, duration: 0.45 }}
+        className="mb-8 px-4 py-3.5 rounded-2xl bg-navi-surface border border-navi-border"
+      >
+        <p className="text-[13px] text-navi-secondary leading-relaxed">
+          <strong className="text-navi-text font-semibold">어떤 버튼을 눌러도 데이터는 사라지지 않아요.</strong>{' '}
+          실제 차트 위에서 직접 클릭하고 판단하면서 차트 읽기 능력이 생겨요.
         </p>
       </motion.div>
 
@@ -208,13 +124,13 @@ export default function TutorialPage() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.0 }}
+        transition={{ delay: 0.4, duration: 0.45 }}
         className="space-y-3 mt-auto"
       >
         <Link
           href="/chart?onboard=1"
-          className="w-full flex items-center justify-center h-12
-                     bg-navi-action text-white font-bold text-sm
+          className="w-full flex items-center justify-center h-[52px]
+                     bg-navi-action text-white font-bold text-[15px]
                      rounded-xl border border-navi-action
                      hover:bg-navi-action-hover
                      transition-all duration-150 active:scale-[0.98]
@@ -225,9 +141,9 @@ export default function TutorialPage() {
 
         <Link
           href="/chart"
-          className="w-full flex items-center justify-center h-10
+          className="w-full flex items-center justify-center h-11
                      border border-navi-border rounded-xl
-                     text-[12px] text-navi-muted
+                     text-[13px] text-navi-muted
                      hover:border-navi-border2 hover:text-navi-text
                      transition-all duration-150"
         >

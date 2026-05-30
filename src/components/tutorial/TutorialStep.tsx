@@ -140,12 +140,12 @@ interface TestQ {
 function buildTestQs(c: CandleData[]): TestQ[] {
   return [
     {
-      id: 'trend', label: '📈 현재 추세는?', hint: 'MA 선들의 방향을 봐요',
+      id: 'trend', label: '현재 추세는?', hint: 'MA 선들의 방향을 봐요',
       correct: scoreTrend(c),
       choices: [
-        { v: 'up',       icon: '📈', label: '상승' },
-        { v: 'sideways', icon: '➡️', label: '횡보' },
-        { v: 'down',     icon: '📉', label: '하락' },
+        { v: 'up',       icon: '↑', label: '상승' },
+        { v: 'sideways', icon: '→', label: '횡보' },
+        { v: 'down',     icon: '↓', label: '하락' },
       ],
       feedback: {
         up:       'MA선들이 함께 우상향 중이에요. 상승 추세예요.',
@@ -154,12 +154,12 @@ function buildTestQs(c: CandleData[]): TestQ[] {
       },
     },
     {
-      id: 'rsi', label: '🌡️ RSI 상태는?', hint: 'RSI 그래프 오른쪽 끝 값을 봐요',
+      id: 'rsi', label: 'RSI 상태는?', hint: 'RSI 그래프 오른쪽 끝 값을 봐요',
       correct: scoreRSI(c),
       choices: [
-        { v: 'overbought', icon: '🔴', label: '과열 (70+)' },
-        { v: 'neutral',    icon: '⚪', label: '중립' },
-        { v: 'oversold',   icon: '🟢', label: '침체 (30-)' },
+        { v: 'overbought', icon: '↑', label: '과열 (70+)' },
+        { v: 'neutral',    icon: '—', label: '중립' },
+        { v: 'oversold',   icon: '↓', label: '침체 (30-)' },
       ],
       feedback: {
         overbought: 'RSI 65+ — 과매수 구간이에요. 조정 가능성이 있어요.',
@@ -168,11 +168,11 @@ function buildTestQs(c: CandleData[]): TestQ[] {
       },
     },
     {
-      id: 'macd', label: '🔄 MACD 상태는?', hint: '파란선·주황선 위치를 봐요',
+      id: 'macd', label: 'MACD 상태는?', hint: '파란선·주황선 위치를 봐요',
       correct: scoreMACDSignal(c),
       choices: [
-        { v: 'bullish', icon: '🔵', label: '상승 모멘텀' },
-        { v: 'bearish', icon: '🟠', label: '하락 모멘텀' },
+        { v: 'bullish', icon: '↑', label: '상승 모멘텀' },
+        { v: 'bearish', icon: '↓', label: '하락 모멘텀' },
       ],
       feedback: {
         bullish: 'MACD선이 시그널선 위에 있어요. 상승 모멘텀이에요.',
@@ -180,12 +180,12 @@ function buildTestQs(c: CandleData[]): TestQ[] {
       },
     },
     {
-      id: 'prediction', label: '🎯 당신의 예측은?', hint: '정답 없음 — 자유롭게 판단해봐요',
+      id: 'prediction', label: '내 예측은?', hint: '정답 없음 — 자유롭게 판단해봐요',
       correct: null,
       choices: [
-        { v: 'up',       icon: '📈', label: '상승' },
-        { v: 'sideways', icon: '➡️', label: '횡보' },
-        { v: 'down',     icon: '📉', label: '하락' },
+        { v: 'up',       icon: '↑', label: '상승' },
+        { v: 'sideways', icon: '→', label: '횡보' },
+        { v: 'down',     icon: '↓', label: '하락' },
       ],
       feedback: {
         up:       '상승 예측! 시뮬레이션에서 직접 확인해봐요.',
@@ -387,7 +387,7 @@ export function TutorialStep() {
                        bg-navi-action text-white hover:bg-navi-action-hover transition active:scale-95
                        shadow-[0_2px_12px_rgba(91,127,255,0.35)]"
           >
-            🚀 시작하기
+            시뮬레이션 시작하기
           </Link>
         )}
       </div>
@@ -396,19 +396,19 @@ export function TutorialStep() {
 
   /* IDLE content ───────────────────────────────────────── */
   const idleContent = (
-    <div className="px-4 py-3 space-y-2.5">
-      <p className="text-[13.5px] font-bold text-navi-text leading-snug">
+    <div className="px-4 py-3.5 space-y-3">
+      <p className="text-[14px] font-bold text-navi-text leading-snug">
         {currentStep.title}
       </p>
       {currentStep.body && (
-        <p className="text-[11.5px] text-navi-secondary leading-relaxed whitespace-pre-line">
+        <p className="text-[12px] text-navi-secondary leading-relaxed whitespace-pre-line">
           {currentStep.body}
         </p>
       )}
       {currentStep.tips && currentStep.tips.length > 0 && (
-        <ul className="bg-navi-surface2 rounded-lg p-2.5 space-y-1">
+        <ul className="bg-navi-surface2 rounded-lg p-3 space-y-1.5">
           {currentStep.tips.map((tip, i) => (
-            <li key={i} className="flex gap-1.5 text-[11px] text-navi-secondary">
+            <li key={i} className="flex gap-2 text-[12px] text-navi-secondary">
               <span className="text-navi-muted shrink-0 mt-px">•</span>
               <span>{tip}</span>
             </li>
@@ -417,18 +417,18 @@ export function TutorialStep() {
       )}
       {currentStep.mission && (
         /* Mission = Action color (사용자가 해야 하는 것) */
-        <div className="bg-navi-action/[0.09] border border-navi-action/25 rounded-lg p-2.5">
-          <div className="flex items-center gap-1.5 mb-1">
+        <div className="bg-navi-action/[0.09] border border-navi-action/25 rounded-lg p-3">
+          <div className="flex items-center gap-1.5 mb-1.5">
             <motion.div
               animate={{ scale: [1, 1.4, 1] }}
               transition={{ repeat: Infinity, duration: 1.3 }}
               className="w-1.5 h-1.5 rounded-full bg-navi-action"
             />
-            <span className="text-[9px] font-bold text-navi-action uppercase tracking-[0.06em]">
+            <span className="text-[10px] font-bold text-navi-action uppercase tracking-[0.06em]">
               지금 해보세요
             </span>
           </div>
-          <p className="text-[11.5px] text-navi-text leading-snug">
+          <p className="text-[12px] text-navi-text leading-snug">
             {currentStep.mission}
           </p>
         </div>
@@ -439,19 +439,19 @@ export function TutorialStep() {
   /* JUDGMENT content — 선택지 hover = Action ─────────── */
   const judgmentContent = currentStep.judgment ? (
     <div className="px-4 py-3 space-y-2">
-      <p className="text-[13px] font-bold text-navi-text leading-snug">{currentStep.title}</p>
-      <p className="text-[11px] text-navi-secondary">{currentStep.judgment.question}</p>
+      <p className="text-[14px] font-bold text-navi-text leading-snug">{currentStep.title}</p>
+      <p className="text-[12px] text-navi-secondary">{currentStep.judgment.question}</p>
       <div className="space-y-1.5">
         {currentStep.judgment.choices.map(c => (
           <button
             key={c.value}
             onClick={() => notifyJudgment(c.value)}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left
                        border border-navi-border2 transition-all
                        hover:border-navi-action/40 hover:bg-navi-action/[0.06]
                        active:scale-[0.98]"
           >
-            <span className="text-base shrink-0 leading-none">{c.icon}</span>
+            <span className="text-[15px] font-bold shrink-0 leading-none text-navi-text w-5 text-center">{c.icon}</span>
             <span className="text-[12px] font-medium text-navi-text">{c.label}</span>
           </button>
         ))}
@@ -461,52 +461,54 @@ export function TutorialStep() {
 
   /* FEEDBACK content ───────────────────────────────────── */
   const feedbackContent = (
-    <div className="px-4 py-3 space-y-2">
-      <p className="text-[13px] font-bold text-navi-text leading-snug">{currentStep.title}</p>
+    <div className="px-4 py-3.5 space-y-2.5">
+      <p className="text-[14px] font-bold text-navi-text leading-snug">{currentStep.title}</p>
 
       {/* Judgment result — info surface, 흰 텍스트 */}
       {currentStep.actionRequired === 'judgment' &&
        currentStep.judgment && chosenJudgment && (() => {
          const chosen = currentStep.judgment!.choices.find(c => c.value === chosenJudgment)
          return chosen ? (
-           <div className="bg-navi-info/[0.07] border border-navi-info/25 rounded-lg p-2.5">
-             <div className="flex items-center gap-2 mb-1">
-               <span className="leading-none">{chosen.icon}</span>
-               <span className="text-[11px] font-semibold text-navi-text">{chosen.label}</span>
+           <div className="bg-navi-info/[0.07] border border-navi-info/25 rounded-lg p-3">
+             <div className="flex items-center gap-2 mb-1.5">
+               <span className="text-[14px] font-bold leading-none text-navi-text">{chosen.icon}</span>
+               <span className="text-[12px] font-semibold text-navi-text">{chosen.label}</span>
              </div>
-             <p className="text-[11px] text-navi-secondary leading-relaxed">
+             <p className="text-[12px] text-navi-secondary leading-relaxed">
                {chosen.feedback}
              </p>
            </div>
          ) : null
        })()}
 
-      {/* Candle OHLC */}
+      {/* Candle OHLC — surface/border 기반 상태 표현 */}
       {clickedCandle && currentStep.actionRequired === 'candle-click' && (
         <div className="bg-navi-surface2 rounded-lg p-2.5">
-          <p className="text-[9px] text-navi-muted mb-1.5 font-semibold uppercase tracking-wide">
-            📊 {clickedCandle.time}
+          <p className="text-[10px] text-navi-muted mb-2 font-semibold uppercase tracking-wide">
+            {clickedCandle.time}
           </p>
           <div className="grid grid-cols-5 gap-1">
             {[
-              { label: '시가', value: `$${clickedCandle.open.toFixed(1)}`,  col: '' },
-              { label: '고가', value: `$${clickedCandle.high.toFixed(1)}`,  col: '#10b981' },
-              { label: '저가', value: `$${clickedCandle.low.toFixed(1)}`,   col: '#ef4444' },
-              { label: '종가', value: `$${clickedCandle.close.toFixed(1)}`, col: '' },
+              { label: '시가',  value: `$${clickedCandle.open.toFixed(1)}`,   type: 'neutral' as const },
+              { label: '고가',  value: `$${clickedCandle.high.toFixed(1)}`,   type: 'up' as const },
+              { label: '저가',  value: `$${clickedCandle.low.toFixed(1)}`,    type: 'down' as const },
+              { label: '종가',  value: `$${clickedCandle.close.toFixed(1)}`,  type: 'neutral' as const },
               {
                 label: '등락',
                 value: `${clickedCandle.close >= clickedCandle.open ? '+' : ''}${
                   ((clickedCandle.close - clickedCandle.open) / clickedCandle.open * 100).toFixed(1)
                 }%`,
-                col: clickedCandle.close >= clickedCandle.open ? '#10b981' : '#ef4444',
+                type: (clickedCandle.close >= clickedCandle.open ? 'up' : 'down') as 'up' | 'down',
               },
-            ].map(({ label, value, col }) => (
-              <div key={label} className="flex flex-col items-center bg-navi-surface3 rounded px-0.5 py-1.5">
-                <span className="text-[8px] text-navi-muted">{label}</span>
-                <span className="text-[10px] font-bold mt-0.5"
-                  style={col ? { color: col } : { color: '#F8F9F7' }}>
-                  {value}
-                </span>
+            ].map(({ label, value, type }) => (
+              <div key={label} className={clsx(
+                'flex flex-col items-center rounded px-0.5 py-1.5',
+                type === 'up'   ? 'bg-navi-success/[0.08] border border-navi-success/20' :
+                type === 'down' ? 'bg-navi-danger/[0.08]  border border-navi-danger/20'  :
+                'bg-navi-surface3'
+              )}>
+                <span className="text-[9px] text-navi-muted">{label}</span>
+                <span className="text-[11px] font-bold mt-0.5 text-navi-text">{value}</span>
               </div>
             ))}
           </div>
@@ -515,8 +517,8 @@ export function TutorialStep() {
 
       {/* Completion message — success surface, 흰 텍스트 */}
       {currentStep.completionMessage && (
-        <div className="bg-navi-success/[0.07] border border-navi-success/25 rounded-lg p-2.5">
-          <p className="text-[11px] text-navi-text leading-relaxed">
+        <div className="bg-navi-success/[0.07] border border-navi-success/25 rounded-lg p-3">
+          <p className="text-[12px] text-navi-text leading-relaxed">
             ✓ {currentStep.completionMessage}
           </p>
         </div>
@@ -533,9 +535,8 @@ export function TutorialStep() {
       const total = questions.filter(q => q.correct !== null).length
       return (
         <div className="px-4 py-3 space-y-2">
-          <p className="text-[13px] font-bold text-navi-text">
-            {score >= total ? '🎯' : score >= total - 1 ? '✅' : '📚'}{' '}
-            {score} / {total} 정답!
+          <p className="text-[14px] font-bold text-navi-text">
+            {score} / {total} 정답
           </p>
           <div className="space-y-1">
             {questions.slice(0, 3).map(q => {
@@ -559,11 +560,9 @@ export function TutorialStep() {
               )
             })}
             {/* 예측 = info surface, 흰 텍스트 */}
-            <div className="bg-navi-info/[0.07] text-navi-text text-[11px] text-center py-2 rounded-lg border border-navi-info/25">
-              내 예측:{' '}
-              {questions[3]?.choices.find(c => c.v === testAnswers['prediction'])?.icon}{' '}
-              {questions[3]?.choices.find(c => c.v === testAnswers['prediction'])?.label}
-              {' '}→ 시뮬레이션에서 직접 확인!
+            <div className="bg-navi-info/[0.07] text-navi-text text-[12px] text-center py-2 rounded-lg border border-navi-info/25">
+              내 예측: {questions[3]?.choices.find(c => c.v === testAnswers['prediction'])?.label}
+              {' '}→ 시뮬레이션에서 확인해봐요
             </div>
           </div>
         </div>
@@ -582,9 +581,7 @@ export function TutorialStep() {
           </span>
         </div>
         {/* 힌트 = 보조 텍스트 */}
-        <p className="text-[10px] text-navi-secondary flex items-center gap-1">
-          <span style={{ opacity: 0.7 }}>💡</span> {q.hint}
-        </p>
+        <p className="text-[11px] text-navi-muted">힌트 · {q.hint}</p>
 
         {/* Progress bar — Action */}
         <div className="flex gap-1">
@@ -617,14 +614,14 @@ export function TutorialStep() {
               }}
               /* 선택 = Action color */
               className={clsx(
-                'flex flex-col items-center py-2.5 rounded-lg border-2 transition-all active:scale-95',
+                'flex flex-col items-center py-3 rounded-lg border-2 transition-all active:scale-95',
                 testAnswers[q.id] === c.v
                   ? 'border-navi-action/70 bg-navi-action/[0.10]'
                   : 'border-navi-border2 hover:border-navi-action/35 hover:bg-navi-action/[0.04]'
               )}
             >
-              <span className="text-xl leading-none">{c.icon}</span>
-              <span className="text-[10px] font-semibold text-navi-text mt-1
+              <span className="text-[18px] font-bold leading-none text-navi-text">{c.icon}</span>
+              <span className="text-[11px] font-semibold text-navi-text mt-1.5
                                text-center leading-tight px-0.5">
                 {c.label}
               </span>

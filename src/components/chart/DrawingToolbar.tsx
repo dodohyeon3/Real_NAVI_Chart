@@ -92,8 +92,7 @@ export function DrawingToolbar() {
           {/* 차트로 이동 안내 배너 */}
           {drawingStep === 0 && (
             <div className="flex items-center gap-2 px-3.5 py-2 bg-amber-500/[0.08] border-b border-amber-500/20">
-              <span className="text-base">⬆️</span>
-              <p className="text-[11px] font-semibold text-navi-text">위 차트에서 직접 클릭하세요</p>
+              <p className="text-[12px] font-semibold text-navi-text">위 차트에서 직접 클릭하세요</p>
               <button
                 onClick={() => setDrawingTool('none')}
                 className="ml-auto text-[11px] text-navi-muted hover:text-navi-text transition-colors"

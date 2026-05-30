@@ -99,7 +99,7 @@ export default function LandingPage() {
         {/* 버튼 보조 정보 */}
         <div className="flex items-center justify-center gap-2 text-[11px]"
              style={{ color: 'rgba(248,249,247,0.4)' }}>
-          <span>⏱ 약 7~10분</span>
+          <span>약 7~10분</span>
           <span
             className="w-1 h-1 bg-navi-border2 shrink-0 inline-block"
             style={{ clipPath: 'polygon(50% 0%,100% 50%,50% 100%,0% 50%)' }}

@@ -4,12 +4,12 @@ import Link from 'next/link'
 import { useLearnStore } from '@/stores/learnStore'
 
 const STEPS = [
-  { key: 'moving-average', label: 'MA',       icon: '📊', desc: '추세 읽기',   type: 'indicator' as const },
-  { key: 'bollinger',      label: 'BB',        icon: '〰️', desc: '변동성',      type: 'indicator' as const },
-  { key: 'rsi',            label: 'RSI',       icon: '🌡️', desc: '과열 신호',  type: 'indicator' as const },
-  { key: 'macd',           label: 'MACD',      icon: '🔄', desc: '추세 전환',  type: 'indicator' as const },
-  { key: 'drawing',        label: '작도',       icon: '✏️', desc: '직접 분석', type: 'drawing'   as const },
-  { key: 'simulate',       label: '시뮬레이션', icon: '🔮', desc: '실전 예측', type: 'simulate'  as const },
+  { key: 'moving-average', label: 'MA',       abbr: 'MA',   desc: '추세 읽기',   type: 'indicator' as const },
+  { key: 'bollinger',      label: 'BB',        abbr: 'BB',   desc: '변동성',      type: 'indicator' as const },
+  { key: 'rsi',            label: 'RSI',       abbr: 'RSI',  desc: '과열 신호',   type: 'indicator' as const },
+  { key: 'macd',           label: 'MACD',      abbr: 'MACD', desc: '추세 전환',   type: 'indicator' as const },
+  { key: 'drawing',        label: '작도',       abbr: '↗',   desc: '직접 분석',   type: 'drawing'   as const },
+  { key: 'simulate',       label: '시뮬레이션', abbr: '▶',   desc: '실전 예측',   type: 'simulate'  as const },
 ]
 
 export function LearningPath() {
@@ -29,12 +29,12 @@ export function LearningPath() {
       <div className="flex items-center gap-1.5 mb-2">
         <span className="text-[11px] font-bold text-navi-muted">학습 경로</span>
         {allDone ? (
-          /* 완료 배지 = success surface (텍스트 아닌 배경으로 상태 표현) */
-          <span className="text-[10px] bg-navi-success/[0.08] text-navi-text px-2 py-0.5 rounded-full border border-navi-success/25">
-            🎉 모두 완료!
+          /* 완료 배지 = success surface */
+          <span className="text-[11px] bg-navi-success/[0.08] text-navi-text px-2 py-0.5 rounded-full border border-navi-success/25">
+            모두 완료
           </span>
         ) : (
-          <span className="text-[10px] text-navi-muted">
+          <span className="text-[11px] text-navi-muted">
             {STEPS.filter(s => isDone(s.key)).length}/{STEPS.length} 완료
           </span>
         )}
@@ -59,7 +59,7 @@ export function LearningPath() {
                   : 'bg-navi-surface border-navi-border text-navi-muted opacity-50',
               ].join(' ')}
             >
-              <span>{step.icon}</span>
+              <span className="text-[11px] font-bold">{step.abbr}</span>
               <span>{step.label}</span>
               {done    && <span className="text-navi-text">✓</span>}
               {current && <span className="w-1.5 h-1.5 rounded-full bg-navi-action animate-pulse" />}
@@ -78,12 +78,12 @@ export function LearningPath() {
         })}
       </div>
 
-      {/* 현재 단계 안내 — 텍스트 색 최소화 */}
+      {/* 현재 단계 안내 */}
       {!allDone && currentIdx !== -1 && (
-        <p className="text-[10px] text-navi-muted mt-1.5">
+        <p className="text-[11px] text-navi-muted mt-1.5">
           다음 →{' '}
           <span className="text-navi-text font-medium">
-            {STEPS[currentIdx].icon} {STEPS[currentIdx].desc}
+            {STEPS[currentIdx].desc}
           </span>
           {STEPS[currentIdx].type === 'indicator'
             ? ` — 아래 "${STEPS[currentIdx].label}" 버튼을 눌러보세요`

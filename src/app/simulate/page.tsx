@@ -42,7 +42,7 @@ function WelcomeBanner() {
         className="absolute top-3 right-3 text-navi-muted hover:text-navi-text text-lg leading-none"
       >×</button>
       <p className="text-sm font-bold text-navi-text mb-1">
-        🎉 튜토리얼 완료! 이제 진짜 시험이에요
+        튜토리얼 완료 — 이제 진짜 시험이에요
       </p>
       <p className="text-xs text-navi-secondary leading-relaxed">
         방금 배운 MA·RSI·MACD·볼린저 밴드를 모두 사용할 수 있어요.
@@ -131,7 +131,7 @@ export default function SimulatePage() {
       {/* ── 안내 배너 ────────────────────────────────────────── */}
       <div className="mb-4 bg-navi-surface border border-navi-border rounded-2xl p-4">
         <p className="text-sm font-semibold text-navi-text mb-1.5">
-          📊 이 시점 이후, 차트는 어떻게 됐을까요?
+          이 시점 이후, 차트는 어떻게 됐을까요?
         </p>
         <p className="text-xs text-navi-muted leading-relaxed">
           아래 차트는 NVDA의 실제 과거 {PAST_DAYS}일(약 {Math.round(PAST_DAYS / 21)}개월) 데이터예요.
@@ -139,11 +139,12 @@ export default function SimulatePage() {
           분석 도구·작도 도구를 활용해 예측한 뒤{' '}
           <span className="text-navi-text font-semibold">결과 보기</span>를 눌러보세요.
         </p>
-        <div className="mt-3 flex flex-wrap gap-3 text-[11px] text-navi-muted">
-          <span>🔵 분석 도구로 지표 추가</span>
-          <span>✏️ 작도 도구로 직접 그리기</span>
-          <span>🔮 결과 보기로 정답 확인</span>
-          <span>🔄 다른 구간으로 반복 연습</span>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {['분석 도구로 지표 추가', '작도 도구로 직접 그리기', '결과 보기로 정답 확인', '다른 구간으로 반복 연습'].map(t => (
+            <span key={t} className="text-[11px] px-2.5 py-1 rounded-full bg-navi-surface2 border border-navi-border2 text-navi-muted">
+              {t}
+            </span>
+          ))}
         </div>
       </div>
 

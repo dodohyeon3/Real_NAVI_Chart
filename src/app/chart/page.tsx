@@ -141,9 +141,9 @@ function ChartPageInner() {
             id="analysis-tools-card"
             className="bg-navi-surface border border-navi-border rounded-xl p-4 overflow-visible"
           >
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-[10px] font-bold tracking-[0.07em] uppercase text-navi-muted">분석 도구</span>
-              <span className="text-[10px] text-navi-muted opacity-60">클릭하면 차트에 표시돼요</span>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[11px] font-bold tracking-[0.07em] uppercase text-navi-muted">분석 도구</span>
+              <span className="text-[11px] text-navi-muted">클릭하면 차트에 표시돼요</span>
             </div>
             <IndicatorToolbar />
           </div>
@@ -153,9 +153,9 @@ function ChartPageInner() {
             id="drawing-tools-card"
             className="bg-navi-surface border border-navi-border rounded-xl p-4"
           >
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-[10px] font-bold tracking-[0.07em] uppercase text-navi-muted">작도 도구</span>
-              <span className="text-[10px] text-navi-muted opacity-60">차트에 직접 그려봐요</span>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[11px] font-bold tracking-[0.07em] uppercase text-navi-muted">작도 도구</span>
+              <span className="text-[11px] text-navi-muted">차트에 직접 그려봐요</span>
             </div>
             <DrawingToolbar />
           </div>
@@ -163,7 +163,7 @@ function ChartPageInner() {
 
         {/* 지표 설명 링크 */}
         <div id="indicator-links" className="mt-5">
-          <p className="text-[10px] tracking-[0.07em] uppercase text-navi-muted mb-2.5">
+          <p className="text-[11px] tracking-[0.07em] uppercase text-navi-muted mb-3">
             지표 더 알아보기
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
