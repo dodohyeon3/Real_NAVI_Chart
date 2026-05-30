@@ -55,6 +55,18 @@ export interface TutorialStep {
 
   /** 이 단계 진입 시 기존 작도 (추세선·피보나치) 를 모두 지운다 */
   clearDrawingsOnEnter?: boolean
+
+  /**
+   * 피보나치 작도 가이드 — 저점·고점 위치에 펄스 마커 표시
+   * ChartContainer 가 priceToCoordinate + timeToCoordinate 로 위치 계산 후
+   * HTML 오버레이로 렌더링한다.
+   */
+  fibGuide?: {
+    lowDate:   string   // 'YYYY-MM-DD'
+    lowPrice:  number
+    highDate:  string
+    highPrice: number
+  }
 }
 
 export interface CandleData {

@@ -67,7 +67,7 @@ export function ChartContainer() {
     clearDrawingsSignal,
   } = useChartStore()
 
-  const { focusBarsFromEnd } = useTutorialStore()
+  const { focusBarsFromEnd, currentStep } = useTutorialStore()
 
   // ref를 항상 최신 상태로 유지
   useEffect(() => { drawingToolRef.current = drawingTool }, [drawingTool])
@@ -96,6 +96,38 @@ export function ChartContainer() {
         .map(lv => ({ ...lv, y: series.priceToCoordinate(lv.value) ?? -999 }))
         .filter(lv => lv.y >= 2 && lv.y <= CHART_HEIGHT - 2)
     )
+  }, [])
+
+  // ── 피보나치 작도 가이드 마커 (저점·고점 펄스 표시) ──────
+  const [fibGuideMarkers, setFibGuideMarkers] = useState<{
+    low:  { x: number; y: number }
+    high: { x: number; y: number }
+  } | null>(null)
+
+  const updateFibGuideMarkers = useCallback(() => {
+    const { currentStep: step } = useTutorialStore.getState()
+    const guide = step?.fibGuide
+    if (!guide || !chartRef.current || !candleRef.current || !containerRef.current) {
+      setFibGuideMarkers(null)
+      return
+    }
+    const xLow  = chartRef.current.timeScale().timeToCoordinate(guide.lowDate  as any)
+    const yLow  = candleRef.current.priceToCoordinate(guide.lowPrice)
+    const xHigh = chartRef.current.timeScale().timeToCoordinate(guide.highDate as any)
+    const yHigh = candleRef.current.priceToCoordinate(guide.highPrice)
+    const w     = containerRef.current.clientWidth
+
+    if (xLow  !== null && yLow  !== null &&
+        xHigh !== null && yHigh !== null &&
+        xLow  > 0 && xLow  < w &&
+        xHigh > 0 && xHigh < w) {
+      setFibGuideMarkers({
+        low:  { x: Math.round(xLow),  y: Math.round(yLow)  },
+        high: { x: Math.round(xHigh), y: Math.round(yHigh) },
+      })
+    } else {
+      setFibGuideMarkers(null)
+    }
   }, [])
 
   // clearCanvas: 캔버스 완전 초기화 (피보나치는 HTML로 관리하므로 canvas 그리기 불필요)
@@ -163,8 +195,11 @@ export function ChartContainer() {
     // 메인 차트를 chartSync에 등록 → RSI/MACD 서브 차트에 범위 전파
     chartSync.register(chart)
 
-    // 스크롤/줌 시 피보나치 HTML 레이블 y좌표 재계산
-    chart.timeScale().subscribeVisibleTimeRangeChange(updateFibLabels)
+    // 스크롤/줌 시 피보나치 레이블 + 가이드 마커 재계산
+    chart.timeScale().subscribeVisibleTimeRangeChange(() => {
+      updateFibLabels()
+      updateFibGuideMarkers()
+    })
 
     // 튜토리얼 캔들 클릭 감지 (drawingTool 상태와 무관하게 항상 활성)
     chart.subscribeClick((params) => {
@@ -190,7 +225,7 @@ export function ChartContainer() {
       chartRef.current = null; candleRef.current = null
       bbRef.current = null;    maRef.current = null
     }
-  }, [syncCanvas, updateFibLabels])
+  }, [syncCanvas, updateFibLabels, updateFibGuideMarkers])
 
   // ── clearDrawingsSignal 감지 → 모든 작도 제거 ───────
   useEffect(() => {
@@ -286,6 +321,16 @@ export function ChartContainer() {
       to:   n + 3,
     })
   }, [focusBarsFromEnd, candleData.length])
+
+  // ── 튜토리얼 단계 변경 → 피보나치 가이드 마커 업데이트 ──
+  useEffect(() => {
+    if (!chartRef.current) return
+    // 차트 레이아웃이 자리잡은 뒤 좌표 계산 (2-frame delay)
+    const raf = requestAnimationFrame(() =>
+      requestAnimationFrame(() => updateFibGuideMarkers())
+    )
+    return () => cancelAnimationFrame(raf)
+  }, [currentStep, updateFibGuideMarkers])
 
   // ── Crosshair move → Canvas rubber-band (루프 없음) ───
   useEffect(() => {
@@ -518,6 +563,57 @@ export function ChartContainer() {
           {lv.label}
         </div>
       ))}
+
+      {/* ── 피보나치 작도 가이드 마커 (저점·고점 펄스) ────── */}
+      {fibGuideMarkers && (
+        <>
+          {/* ① 저점 — 초록 펄스 (candle 아래) */}
+          <div
+            className="absolute pointer-events-none select-none flex flex-col items-center"
+            style={{ left: fibGuideMarkers.low.x - 10, top: fibGuideMarkers.low.y + 6, zIndex: 16 }}
+          >
+            <div className="relative w-5 h-5 mb-1">
+              <div className="absolute inset-0 rounded-full bg-emerald-400/50 animate-ping" />
+              <div className="absolute inset-[3px] rounded-full bg-emerald-400" />
+            </div>
+            <div style={{
+              background: 'rgba(16,185,129,0.9)',
+              color: '#fff',
+              fontSize: '9px',
+              fontWeight: 800,
+              padding: '2px 6px',
+              borderRadius: 20,
+              whiteSpace: 'nowrap',
+              letterSpacing: '0.03em',
+            }}>
+              ① 저점
+            </div>
+          </div>
+
+          {/* ② 고점 — 주황 펄스 (candle 위) */}
+          <div
+            className="absolute pointer-events-none select-none flex flex-col-reverse items-center"
+            style={{ left: fibGuideMarkers.high.x - 10, top: fibGuideMarkers.high.y - 46, zIndex: 16 }}
+          >
+            <div className="relative w-5 h-5 mt-1">
+              <div className="absolute inset-0 rounded-full bg-orange-400/50 animate-ping" />
+              <div className="absolute inset-[3px] rounded-full bg-orange-400" />
+            </div>
+            <div style={{
+              background: 'rgba(234,88,12,0.9)',
+              color: '#fff',
+              fontSize: '9px',
+              fontWeight: 800,
+              padding: '2px 6px',
+              borderRadius: 20,
+              whiteSpace: 'nowrap',
+              letterSpacing: '0.03em',
+            }}>
+              ② 고점
+            </div>
+          </div>
+        </>
+      )}
 
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center
