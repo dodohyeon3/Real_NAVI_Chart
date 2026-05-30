@@ -97,7 +97,7 @@ function ChartPageInner() {
             {/* 종목 — 브랜드보다 낮은 위계로 표시 */}
             <div className="flex items-baseline gap-1.5">
               <span className="text-[13px] font-semibold text-navi-secondary tracking-tight">NVDA</span>
-              <span className="text-[10px]" style={{ color: 'rgba(248,249,247,0.35)' }}>NASDAQ</span>
+              <span className="text-[10px] text-quiet-35">NASDAQ</span>
             </div>
           </div>
 

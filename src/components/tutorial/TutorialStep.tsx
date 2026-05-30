@@ -358,8 +358,7 @@ export function TutorialStep() {
           )} />
         ))}
       </div>
-      <span className="text-[10px] tabular-nums ml-2 shrink-0"
-            style={{ color: 'rgba(248,249,247,0.44)' }}>
+      <span className="text-[10px] tabular-nums ml-2 shrink-0 text-quiet-45">
         {currentIndex + 1} / {steps.length}
       </span>
     </div>
@@ -371,8 +370,7 @@ export function TutorialStep() {
       {/* 건너뛰기 = disabled 텍스트 */}
       <button
         onClick={skip}
-        className="text-[10px] hover:text-navi-secondary transition-colors"
-        style={{ color: 'rgba(248,249,247,0.35)' }}
+        className="text-[10px] text-quiet-35 hover:text-navi-secondary transition-colors"
       >
         건너뛰기
       </button>

@@ -239,7 +239,7 @@ export function ChallengeGuide({ forceGuide = false }: Props) {
                   )} />
                 ))}
               </div>
-              <span className="text-[10px] tabular-nums" style={{ color: 'rgba(248,249,247,0.44)' }}>
+              <span className="text-[10px] tabular-nums text-quiet-45">
                 {idx + 1} / {GUIDE_STEPS.length}
               </span>
             </div>
@@ -252,7 +252,7 @@ export function ChallengeGuide({ forceGuide = false }: Props) {
 
             {/* 네비 */}
             <div className="flex items-center justify-between px-4 py-3 border-t border-navi-border/40">
-              <button onClick={dismiss} className="text-[10px] hover:text-navi-secondary transition-colors" style={{ color: 'rgba(248,249,247,0.35)' }}>
+              <button onClick={dismiss} className="text-[10px] text-quiet-35 hover:text-navi-secondary transition-colors">
                 건너뛰기
               </button>
               <div className="flex gap-1.5 items-center">
